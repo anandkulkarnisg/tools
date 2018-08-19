@@ -1,0 +1,2 @@
+#!/bin/bash
+cat ~/.anand_bashrc | grep -i "dotnetlatest"

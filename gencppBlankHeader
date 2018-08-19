@@ -1,0 +1,17 @@
+#!/bin/bash
+# Synopsis : Generate a blank header file with a given class name and blank layout. Adjust as needed later.
+# usage : gencppBlankHeader [HeaderFileName] [ClassName] 
+# Author : Anand Kulkarni - 18/08/2018.
+
+if [ "$#" != "2" ]; then
+	echo -e "Invalid Usage : gencppBlankHeader [headname] [classname]."
+	exit 1
+fi
+
+headerFileName=$1
+className=$2
+
+echo -e "#include<iostream>\n#include<string>\n\n"
+echo -e "#ifndef ${headerFileName}_H\n#define ${headerFileName}_H\n"
+echo -e "class $className\n"
+echo -e "{\nprivate:\n\nprotected:\n\npublic:\n};\n\n#endif\n"

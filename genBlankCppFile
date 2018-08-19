@@ -1,0 +1,12 @@
+#!/bin/bash
+# Synopsis : Save time by generating a blank C++ file which has all skeleton code to quickly test something out.
+# Author : Anand Kulkarni - 18/08/2018.
+
+if [ "$#" -ne "1" ]; then
+	echo -e "Invalid Usage : genBlankCppFile [filename]"
+	exit 1 
+fi
+
+cppFileName=$1
+cp ~/tools/cpp.skeleton.cpp $PWD/$cppFileName
+exit 0

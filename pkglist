@@ -1,0 +1,2 @@
+#!/bin/bash
+rpm -qf $(which $1) | xargs rpm -ql

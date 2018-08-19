@@ -1,0 +1,3 @@
+#!/bin/bash
+grep -i ^# $1 | grep -i "include<" | awk -F"<" '{print $2}' | sed "s/>//g" | sort | uniq | sed "s/.*/#include<&>/g"
+exit 0

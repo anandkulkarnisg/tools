@@ -1,0 +1,32 @@
+#!/bin/bash
+
+
+# source articles.
+# https://stackoverflow.com/questions/28420466/fedora-20-how-to-run-script-at-the-end-of-startup
+# http://fedoraproject.org/wiki/Packaging:Systemd
+# http://radek.io/2012/02/11/core-dumps-in-fedora/
+
+# Steps below.
+# ----------- START ------------
+#You can create a Systemd unit file in /usr/lib/systemd/system/<service_name>.service. Here is a template:
+#[Unit]
+#Description=<description_string>
+#[Service]
+#WorkingDirectory=<working_directory>
+#Type=forking
+#ExecStart=/bin/bash <absolute_path_to_script>
+#KillMode=process
+#[Install]
+#WantedBy=multi-user.target
+#Replace anything in the angle brackets with your specific information. The 'WantedBy=multi-user.target' is the magic that tells Systemd to run your script on each start.
+#On the command line, tell Systemd to enable your service:
+#systemctl enable <service_name>.service
+# --------------- END ---------------
+
+# set the core file name pattern. This can be done by root only.Hence do at the startup.
+# cat /proc/sys/kernel/core_pattern
+
+su -c "sysctl -w kernel.core_pattern=core"
+
+# The ulimit -c unlimited needs to be set for each user at the start of their session. Hence left to each user to drive it on their own as per need.
+

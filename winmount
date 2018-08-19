@@ -1,0 +1,4 @@
+#!/bin/bash
+echo -e "\n"
+cat /proc/mounts | grep -i "window"
+echo -e "The mount is managed via ~/root/customrun/customrun.sh and logs to /var/log/customrun.log\n"

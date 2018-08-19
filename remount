@@ -1,0 +1,3 @@
+#!/bin/bash
+umount	/dev/sda3
+mount -t ntfs /dev/sda3 /run/media/anand/Windows/ 

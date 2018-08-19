@@ -1,0 +1,23 @@
+#!/bin/bash
+# strip away cropping of the old versions of the tiddlyWiki. Decide how many to keep via below argument.
+
+tiddlyPath="$HOME/tiddlyWiki"
+keepItems=10
+filePattern="TiddlyWiki.*.*.html"
+
+cwd=$PWD
+cd $tiddlyPath
+fileCount=$(ls -lrt $filePattern | wc -l | awk '{print $1}' | sed "s/ //g")
+stripCount=$(expr $fileCount - $keepItems)
+
+if [ $stripCount -lt 1 ] ; then
+	echo -e "Nothing to delete.Exiting!!"
+	cd $cwd
+	exit 0
+fi
+
+fileList=$(ls -lrt $filePattern | head -$stripCount | awk '{print $9}')
+echo -e "Deleteing the below files.\n$fileList" 
+echo $fileList | xargs rm -rf
+cd $cwd
+exit 0

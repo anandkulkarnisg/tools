@@ -1,0 +1,176 @@
+#!/bin/bash
+# Author : Anand Kulkarni
+# Synopsis : This tools helps first initialize a baseline for a folder where in it captures all the checksum of files in this folder in recursive manner.
+#            This file is kept at verifai under the a tagname. Later one can compare / generate the same checksum integrity and compare with this Tag.
+
+# Usage : verifai --action [init/check] --folder [foldername]
+# History : Author - Date - Comment.
+# Anand Kulkarni : 17/06/2016 - Improved last character handling of the folder name in foldername function.
+
+function showusage() {
+	echo -e "Usage : verifai --action [init/check] --folder [foldername]"
+		exit 1
+}
+
+function dowork() {
+	input=$1
+		output=$2
+		echo -e "FILE|CHECKSUM" > $output
+		find $input -type f | xargs $checksumtool | awk -F" " '{print $2"|"$1}' | sort | uniq >> $output 
+}
+
+function foldername() {
+	item=$1
+		last_token=$(echo $item | tr "/" "_")
+		last_character_pos=$((${#last_token}-1))
+		last_character=${item:$last_character_pos:1}
+	if [ "$last_character" = "/" ] ; then
+		last_token=${last_token::-1}
+	fi
+		echo $last_token
+
+}
+
+function docleanup() {
+
+	if [ -d $verifai_data ] ; then
+		echo -e verifai data folder found at $verifai_data. Cleaning the temp files now.
+			count=$(find $verifai_data/ -type f | grep -v "base.original.checksum" | wc -l | sed "s/ //g")
+			echo -e Will clean a total of $count files. 
+			if [ "$verifai_data" != "$HOME/.verifai" ] ; then
+				echo -e FATAL : Something is wrong. The $verifai_data is not same as $HOME/.verifai.Exiting without any cleanup.
+					exit 1
+					fi
+					find $verifai_data/ -type f | grep -v "base.original.checksum" | xargs rm -f
+			else
+				echo -e WARN : $verifai_data folder not found. So skipping the cleanup.Did nothing.
+					fi 
+
+}
+
+function dolist {
+
+	if [ ! -d $verifai_data ] ; then
+		echo FATAL : Cant find the folder $verifai_data.It means either you havent used verifai yet "("in that case need to initialize it first ")".
+			echo -e Else if this is not your first run then it means your verifai installation is corrupt in which case you need to work out what happened :"("
+			exit 1
+			fi
+
+			echo -e Below is a listing of all the existing folders are that are baselined for verifai
+			ls -lrt $verifai_data | grep -i ".base.original.checksum" | sed "s/_/\//g" | sed "s/.base.original.checksum//g" | awk '{print $9}'
+}
+
+
+function argvalidate() {
+
+	if [ $# -eq 1 -a "$1" = "--cleanup" ] ; then
+		docleanup
+			exit 0
+			fi
+
+			if [ $# -eq 1 -a "$1" = "--list" ] ; then
+				dolist
+					exit
+					fi
+
+					if [ $# -ne 4 ] ; then
+						showusage
+							fi
+
+							if [ "$1" != "--action" -o "$3" != "--folder" ] ; then
+								showusage
+									fi
+
+									if [ "$2" != "init" -a "$2" != "check" ] ; then
+										showusage
+											fi
+
+											if [ "$4" = "" ] ; then
+												echo -e "folder name is empty.Not allowed"
+													fi
+
+													if [ ! -d $4 ] ; then
+														echo -e "Folder $4 does not exist.Please check"
+															fi
+
+}
+
+# Main execution starts here.
+# First run the initverifai script and ensure env is setup.
+
+# The tool may be invoked from a path anywhere.
+
+basecall_name=$0
+binary_name=$(echo $basecall_name | awk -F"/" '{print $NF}')
+
+if [ "$binary_name" = "verifai" ] ; then
+# This means most likely the tool is invoked from a PATH variable. Locat the path of tool so that we know where the initverifai is.
+location=$(which verifai)
+	location=${location%verifai}
+	location=${location%/}
+	fi
+
+	if [ ! -f initverifai -a ! -f $location/initverifai ] ; then
+	echo -e FATAL: initverifai not found. It must be in the same directory as that of verifai script.
+	echo -e looked in folder $location
+	echo -e "command was $0"
+	exit 1
+	fi
+
+	if [ "$location" != "" ] ; then
+	. $location/initverifai
+	else
+	. initverifai
+	fi
+
+	argvalidate $@
+
+	foldername=$4
+tagname=$(foldername $foldername)
+	tagname=$verifai_data/$tagname.base.original.checksum
+
+# Now if the action requested is init then check make sure that the file is already not present.
+
+	work_status="false"
+
+	if [ "$2" = "init" ] ; then
+	if [ -f $tagname -a "$verifai_mode" = "--force" ] ; then
+	echo -e WARN : There is already $tagname present which will be erased as init is run again in --force mode.
+	work_status="true"
+	fi
+
+	if [ -f $tagname -a "$verifai_mode" != "--force" ] ; then
+	echo -e ForceMode not set.$tagname already exists.Hence quitting without doing anything.
+	exit 0
+	fi
+
+	if [ ! -f $tagname ] ; then
+	work_status="true"
+	fi
+
+	if [ "$work_status" = "true" ] ; then
+	dowork $foldername $tagname
+	echo -e Completed init of $foldername.Resulting file is $tagname 
+	exit 0
+	fi
+
+	fi
+
+	echo -e Tag name being verified is = $tagname
+
+	if [ "$2" = "check" ] ; then
+	if [ ! -f $tagname ] ; then
+	echo -e Error.To run check mode the base cheksum file must be present.However $tagname is missing.Exiting with failure
+	exit 1
+	else
+	temp_file=${tagname%.base.original.checksum}.$$
+	dowork $foldername $temp_file  
+	diff $tagname $temp_file 
+	if [ $? -eq 0 ] ; then
+	echo INFO : No changes found while comparing the $tagname with ${tagname%.base.original.checksum}.$$ indicating no modification were done. 
+	fi
+	fi
+	fi
+
+	exit 0
+

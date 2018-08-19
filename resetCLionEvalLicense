@@ -1,0 +1,9 @@
+#!/bin/bash
+
+licenseFile1="$HOME/.CLion2017.2/config/eval/CLion171.evaluation.key"
+licenseFile2="$HOME/.CLion2017.2/config/eval/CLion172.evaluation.key"
+licenseFile3="$HOME/.CLion2017.3/config/eval/CLion173.evaluation.key"
+
+rm -f $licenseFile1 $licenseFile2 $licenseFile3
+
+echo -e "successfull"

@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# First get the directory of the execution.
+switch=$1
+
+work_dir=$PWD
+echo -e "Switching to working directory : $work_dir"
+cd $PWD
+
+if [ "$switch" != "l" ] ; then
+	obj_count=$(ls -lrt *.out 2>/dev/null | wc -l | sed "s/ //g")
+	objFileList=$(ls *.out)
+else
+	obj_count=1	
+	objFileList=$(ls *.cpp | tail -1 | sed "s/.cpp/.out/g")
+	
+fi
+
+if [ $obj_count -eq 0 ] ; then
+echo -e "No object files found. [ *.out]"
+fi
+
+if [ $obj_count -gt 0 ] ; then
+echo -e "Removing total of $obj_count binary files [ *.out ]".
+for objFile in $(echo $objFileList)
+do
+	rm -f $objFile
+done
+fi
+
+count=1
+cpp_standard="-std=c++11"
+switches="$cpp_standard -w -fpermissive -Wconversion-null"
+
+if [ "$switch" != "l" ] ; then
+	src_file_count=$(ls -lrt *.cpp 2>/dev/null | wc -l | sed "s/ //g")
+else
+	src_file_count=1
+fi
+
+if [ $src_file_count -eq 0 ] ; then
+echo -e "No source .cpp files to consider.Exiting gracefully"
+exit 0
+fi
+
+if [ "$switch" = "l" ]; then
+	fileList=$(ls -lrt *.cpp | awk '{print $9}' | tail -1)
+else
+	fileList=$(ls *.cpp)
+fi
+
+for file in $(echo $fileList)
+do
+
+if [ ${#count} -lt 2 ] ; then
+count="0${count}"
+fi
+
+echo "$count : compiling $file"
+g++ $switches $file -o ${file%.cpp}.out 
+count=$(expr $count + 1)
+done

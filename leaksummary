@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# First get all the list of object files in the folder.
+cwd=$PWD
+PATH=$PATH:.
+binaryFileList=$(ls *.out)
+valGrindCsvGeneratorBin=genvglogfile
+outputCsvFileName="valgrind.csv"
+
+# First do some cleanup in current folder.
+rm -f *.valg.log
+
+# print initial log.
+echo -e "\nstarting the valgrind run on each binary file"
+
+# First generate the header entry for the file.
+echo -e "pid|filename|status|heap_summary|leak_summary|error_summary" > $outputCsvFileName
+
+# Now run valgrind for each file in the current folder.
+count=1
+for binaryFileItem in $binaryFileList
+do
+	valGrindLogFileName=${binaryFileItem%.out}.valg.log
+	if [ ${#count} -lt 2 ] ; then
+		count="0${count}"
+	fi
+	dovgl $binaryFileItem
+	$valGrindCsvGeneratorBin $valGrindLogFileName >> $outputCsvFileName
+	statusFlag=$(tail -1 $outputCsvFileName | awk -F"|" '{print $3}')
+	if [ "$statusFlag" = "Y" ]; then
+		status="Fail"
+	else
+		status="Success"
+	fi
+	echo -e "$count : running valgrind check on binary file = $binaryFileItem with valgrind output file = $valGrindLogFileName, Status = $status." 
+	count=$(expr $count + 1)
+done
+
+# Remove the unwanted valgrind log files for each output binary.
+rm -f *.valg.log
+
+# Upload the csv into kdb
+~/runq5000 $(which importcsv.q) -exit $1 -q 
+echo -e "\n"

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# First get the PID of the process from the valgrind log.
+PID=$(head -1 $1 | awk -F"==" '{print $2}' | sed "s/ //g")
+
+# Set the Identifying patterns needed below.
+TMP_FOLDER=/tmp
+
+# First identify overall status if leak is there or not. Classify as Y or N based on the same.
+LEAK_STATUS=$(grep -i "no leaks are possible" $1 | wc -l | sed "s/ //g")
+
+if [ $LEAK_STATUS -gt 0 ] ; then
+	LEAK_STATUS="N"
+else
+	LEAK_STATUS="Y"
+fi
+
+# Next thing is to identigy the starting line from where we need the portion of lines for extracting the HEAP , LEAK and ERROR SUMMARIES.
+START_PORTION_LINENUM=$(cat -n $1 | grep -i "==$PID== HEAP SUMMARY:" | awk '{print $1}' | sed "s/ //g")
+END_PORTION_LINENUM=$(wc -l $1 | awk '{print $1}' | sed "s/ //g")
+
+PORTION_LINES=$(expr $END_PORTION_LINENUM + 1 - $START_PORTION_LINENUM)
+#echo $PORTION_LINES
+
+# Now extract the portion required for further processing.
+tail -${PORTION_LINES} $1 | sed "s/==$PID== //g" > $TMP_FOLDER/$1.$$.valg.tmp
+
+TMP_FILE="$TMP_FOLDER/$1.$$.valg.tmp"
+
+# Now extract the information for the HEAP SUMMARY.
+HEAP_SUMMARY=$(cat $TMP_FILE | sed -n '/^HEAP SUMMARY:$/,/^LEAK SUMMARY:/p' | grep -v "LEAK SUMMARY:" | tr "\n" "^")
+LEAK_SUMMARY=$(cat $TMP_FILE | sed -n '/^LEAK SUMMARY:$/,/^ERROR SUMMARY:/p' | grep -v "ERROR SUMMARY:" | tr "\n" "^")
+ERROR_SUMMARY=$(grep "ERROR SUMMARY:" $TMP_FILE | tr "\n" "^")
+
+# Remove the temporary file(s) created.
+rm -f $TMP_FOLDER/$1.$$.valg.tmp
+
+# Convert the $1 into source file name
+srcFileName=$1
+srcFileName=${srcFileName%.valg.log}.cpp
+
+echo "$PID|$srcFileName|$LEAK_STATUS|$HEAP_SUMMARY|$LEAK_SUMMARY|$ERROR_SUMMARY"

@@ -1,0 +1,13 @@
+#!/bin/bash
+# Synopsis : Generate a blank class layout with all sections [ no formatting ]. Generate blank skeleton basically to save typing.
+# Author : Anand Kulkarni : 18/08/2018.
+
+if [ "$#" -ne 1 ]; then
+	echo -e "Invalid Usage : gencppClassLayout [classname]."
+	exit 1
+fi
+
+className=$1
+
+echo -e "class $className\n{\nprivate:\nprotected:\npublic:\n};\n"
+

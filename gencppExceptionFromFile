@@ -1,0 +1,23 @@
+#!/bin/bash
+# This is quickie tool to generate a header file of exceptions for a given c++ exception message and implement the boiler plate code.
+# Takes three parameters. 1) The HeaderFileName 2) The exception name 3) Exception String message.
+
+if [ "$#" -ne "2" ] ; then
+	echo -e "Improper Usage. Please use the format gencppExceptionFromFile [headerfile name] [input file]."
+	echo -e "Input file format should be pipe seperated. ExceptionName|Exception Message."
+	exit 1
+fi
+
+headerFileName=$1
+inputFileName=$2
+
+echo -e "#include<iostream>\n#include<string>\n#include<exception>\n\n#ifndef ${headerFileName}_H\n#define ${headerFileName}_H\n"
+while IFS= read -r lineItem
+do
+    exceptionName=$(echo $lineItem | awk -F"|" '{print $1}')
+    exceptionString=$(echo $lineItem | awk -F"|" '{print $2}')
+    echo -e "const char* ${exceptionName}_msg = \"$exceptionString\";\n"
+    echo -e "struct $exceptionName : public std::exception\n{\n\tconst char * what () const throw ()\n\t{\n\t\treturn(${exceptionName}_msg);\n\t}\n};\n\n"
+done < "$inputFileName"
+echo -e "#endif"
+exit 0

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# First get the directory of the execution.
+
+if [ $# -ne 1 ] ; then
+echo -e "Error no input file detected"
+exit 1
+fi
+
+work_dir=$PWD
+echo -e "Switching to working directory : $work_dir"
+cd $PWD
+
+src_file=$1
+obj_file=${src_file%.cpp}.out
+
+obj_count=$(ls -lrt $obj_file 2>/dev/null | wc -l | sed "s/ //g")
+
+if [ $obj_count -eq 0 ] ; then
+echo -e "No object file $obj_file found."
+fi
+
+if [ $obj_count -gt 0 ] ; then
+echo -e "Removing $obj_file binary file.".
+rm -f $1.out
+fi
+
+cpp_standard="-std=c++11"
+switches="$cpp_standard -g -w -fpermissive -Wconversion-null -lpthread"
+
+echo -e Compiling $src_file
+g++ $switches $src_file -o $obj_file 

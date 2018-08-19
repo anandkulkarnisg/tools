@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export checksumtool=$(which sha256sum)
+export verifai_data=$HOME/.verifai
+export verifai_mode="--noforce"
+if [ ! -d $verifai_data ] ; then
+ echo -e WARN : Creating the output directory for verifai under $verifai_data.Note this is perfectly fine if you have run the verifai tool first time.
+ mkdir -p $verifai_data
+fi
+

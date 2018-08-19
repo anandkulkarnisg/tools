@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# First get the directory of the execution.
+
+work_dir=$PWD
+echo -e "Switching to working directory : $work_dir"
+cd $PWD
+
+obj_count=$(ls -lrt *.out 2>/dev/null | wc -l | sed "s/ //g")
+
+if [ $obj_count -eq 0 ] ; then
+echo -e "No object files found. [ *.out]"
+fi
+
+if [ $obj_count -gt 0 ] ; then
+echo -e "Removing total of $obj_count binary files [ *.out ]".
+rm -f *.out
+fi
+
+count=1
+cpp_standard="-std=c++11"
+switches="$cpp_standard -w -fpermissive -Wconversion-null -lpthread"
+
+src_file_count=$(ls -lrt *.cpp 2>/dev/null | wc -l | sed "s/ //g")
+
+if [ $src_file_count -eq 0 ] ; then
+echo -e "No source .cpp files to consider.Exiting gracefully"
+exit 0
+fi
+
+for file in $(ls *.cpp)
+do
+
+if [ ${#count} -lt 2 ] ; then
+count="0${count}"
+fi
+
+echo "$count : compiling $file"
+g++ $switches $file -o ${file%.cpp}.out 
+count=$(expr $count + 1)
+done

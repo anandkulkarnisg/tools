@@ -1,0 +1,10 @@
+#!/bin/bash
+
+PATH=$PATH:.
+BINARY_NAME=$1
+VALG_LOG=${BINARY_NAME%.out}.valg.log
+VALG_BINARY="valgrind"
+VALG_OPTIONS="--log-file=$VALG_LOG --leak-check=yes --verbose --leak-check=full --show-leak-kinds=all"
+
+$VALG_BINARY $VALG_OPTIONS $BINARY_NAME 2>&1 >> /dev/null
+
