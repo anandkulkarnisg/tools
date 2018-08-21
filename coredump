@@ -26,7 +26,7 @@
 # set the core file name pattern. This can be done by root only.Hence do at the startup.
 # cat /proc/sys/kernel/core_pattern
 
-su -c "sysctl -w kernel.core_pattern=core"
+su -c "sysctl -w kernel.core_pattern=/home/anand/cores/core"
 
 # The ulimit -c unlimited needs to be set for each user at the start of their session. Hence left to each user to drive it on their own as per need.
 
