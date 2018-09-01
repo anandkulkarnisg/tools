@@ -11,7 +11,7 @@ fi
 headerFileName=$1
 inputFileName=$2
 
-echo -e "#include<iostream>\n#include<string>\n#include<exception>\n\n#ifndef ${headerFileName}_H\n#define ${headerFileName}_H\n"
+echo -e "#include<iostream>\n#include<string>\n#include<exception>\n\n#ifndef ${headerFileName%.h}_H\n#define ${headerFileName%.h}_H\n"
 while IFS= read -r lineItem
 do
     exceptionName=$(echo $lineItem | awk -F"|" '{print $1}')

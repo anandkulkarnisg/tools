@@ -1,0 +1,3 @@
+#!/bin/bash
+echo -e "CMakeCache.txt\nCMakeFiles/\nMakefile\ncmake_install.cmake\n*.swp" >> $PWD/.gitignore
+exit 0

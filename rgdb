@@ -1,0 +1,11 @@
+#!/bin/bash
+# Run gdb in rlwrap to remember commands. Pick latest binary in current folder and pick the latest core in cores area.
+
+currentDir=$(pwd)
+binaryName=$(ls -lrt $pwd|awk '{print $9}'|xargs file|grep -i "ELF"|awk -F":" '{print $1}'|tail -1) 
+coreName=$(ls -lrt ~/cores/core.*|awk '{print $9}')
+if [ "$1" = "c" ]; then
+	rlwrap gdb $binaryName $coreName
+else
+	rlwrap gdb $binaryName
+fi
