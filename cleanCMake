@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export currentDir=$(pwd)
+rm -rf $currentDir/CMakeFiles $currentDir/CMakeCache.txt $currentDir/cmake_install.cmake $currentDir/Makefile
+
