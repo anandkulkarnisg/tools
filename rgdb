@@ -3,8 +3,8 @@
 
 currentDir=$(pwd)
 binaryName=$(ls -lrt $pwd|awk '{print $9}'|xargs file|grep -i "ELF"|awk -F":" '{print $1}'|tail -1) 
-coreName=$(ls -lrt ~/cores/core.*|awk '{print $9}')
 if [ "$1" = "c" ]; then
+	coreName=$(ls -lrt ~/cores/core.*|awk '{print $9}')
 	rlwrap gdb $binaryName $coreName
 else
 	rlwrap gdb $binaryName
