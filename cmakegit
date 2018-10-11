@@ -1,3 +1,3 @@
 #!/bin/bash
-echo -e "CMakeCache.txt\nCMakeFiles/\nMakefile\ncmake_install.cmake\n*.swp" >> $PWD/.gitignore
+echo -e "\n#From tool cmakegit.\nCMakeCache.txt\nCMakeFiles/\nMakefile\ncmake_install.cmake\n*.swp\nvalgrind.csv" >> $PWD/.gitignore
 exit 0
