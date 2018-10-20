@@ -18,6 +18,6 @@ do
 	fi
 done
 if [ $countDueItems -eq 0 ]; then
-	echo -e "All Clean!!\n"
+	echo -e "All Clean!!"
 fi
 cd $cwd
