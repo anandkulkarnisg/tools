@@ -7,7 +7,7 @@ countDueItems=0
 for dirItem in $dirList
 do
 	cd $HOME/git/$dirItem
-	dueCount=$(git status|grep -i "Modified:"|wc -l)
+	dueCount=$(git status|egrep -i "Modified:|deleted:"|wc -l)
 	if [ $dueCount -ge 1 ]; then
 		echo -e "There are $dueCount commits due in : $dirItem"
 		countDueItems=$((countDueItems+1))
@@ -17,6 +17,7 @@ do
 		fi
 	fi
 done
+
 if [ $countDueItems -eq 0 ]; then
 	echo -e "All Clean!!"
 fi
