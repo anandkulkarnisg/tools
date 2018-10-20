@@ -3,16 +3,21 @@
 cwd=$PWD
 gitDir=$HOME/git
 dirList=$(ls -lrt $gitDir/ | grep -i ^d | grep -v "external" | awk '{print $9}')
+countDueItems=0
 for dirItem in $dirList
 do
 	cd $HOME/git/$dirItem
 	dueCount=$(git status|grep -i "Modified:"|wc -l)
 	if [ $dueCount -ge 1 ]; then
 		echo -e "There are $dueCount commits due in : $dirItem"
+		countDueItems=$((countDueItems+1))
 	else
 		if [ "$1" = "all" ]; then
 			echo -e "$dirItem is clean."
 		fi
 	fi
 done
+if [ $countDueItems -eq 0 ]; then
+	echo -e "All Clean!!\n"
+fi
 cd $cwd
