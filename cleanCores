@@ -5,9 +5,17 @@ corePath=~anand/cores/
 cd $corePath
 totalCount=$(ls -lrt ~/cores/core.* | awk '{print $9}' | grep -v ^$ | wc -l | sed "s/ //g")
 keepCount=$1
+
 if [ "$keepCount" = "all" ]; then
 	keepCount=0
 fi
+
+
+if [ "$keepCount" = "" ]; then
+	echo -e "Usage : cleanCores [all/keepCount]\n"
+	exit 1
+fi
+
 if [ $totalCount -gt $keepCount ]; then
 	removeCount=$(expr $totalCount - $keepCount)
 	removeNames=$(ls -lrt ~/cores/core.* | awk '{print $9}' | grep -v ^$ | head -$removeCount | tr "\n" " ")

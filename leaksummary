@@ -3,7 +3,10 @@
 # First get all the list of object files in the folder.
 cwd=$PWD
 PATH=$PATH:.
-binaryFileList=$(ls *.out)
+binaryFileList=$(ls *.out 2>/dev/null)
+if [ "$binaryFileList" = "" ]; then
+	binaryFileList=$(file * | egrep -i "ELF 64-bit LSB executable|ELF 32-bit LSB executable" | awk -F":" '{print $1}')
+fi
 valGrindCsvGeneratorBin=genvglogfile
 outputCsvFileName="valgrind.csv"
 
