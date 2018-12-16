@@ -1,0 +1,6 @@
+#!/bin/bash
+# ccs is for csharp compile and execute using mono develop for Linux.
+file=$1
+mcs $PWD/$file
+exeName=${file%.cs}.exe
+runexe $exeName 

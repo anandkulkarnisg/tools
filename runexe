@@ -1,0 +1,2 @@
+#!/bin/bash
+$PWD/$1 2>/dev/null
