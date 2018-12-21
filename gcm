@@ -12,5 +12,8 @@ userFullName=$(awk -v user="$USER" -F":" 'user==$1{print $5}' /etc/passwd)
 userComment=$1
 fullComment=$(echo \"$currDate $currTimeZone "-" $userFullName "-" $userComment\")
 fullCommand=$(echo "git commit -m" $fullComment)
+echo "Running the command --> $fullCommand"
 eval $fullCommand
+echo "Pushing the changes to git now"
+git push -v
 exit 0
