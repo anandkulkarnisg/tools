@@ -1,0 +1,10 @@
+#!/bin/bash
+# Generate git commit command with proper user and date time stamp details.
+currDate=$(date +'%d/%m/%Y %H:%M:%S:%3N')
+currTimeZone=$(timedatectl | grep -i "Time zone:"|awk -F":" '{print $2}'|sed "s/ //g")
+userFullName=$(awk -v user="$USER" -F":" 'user==$1{print $5}' /etc/passwd)
+userComment=$1
+fullComment=$(echo \"$currDate $currTimeZone "-" $userFullName "-" $1\")
+fullCommand=$(echo "git commit -m" $fullComment)
+eval $fullCommand
+exit 0
