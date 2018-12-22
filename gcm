@@ -15,5 +15,6 @@ fullCommand=$(echo "git commit -m" $fullComment)
 echo "Running the command --> $fullCommand"
 eval $fullCommand
 echo "Pushing the changes to git now"
+read -p "Press any key to continue..." -n1 -s
 git push -v
 exit 0
