@@ -13,7 +13,7 @@ currTimeZone=$(timedatectl | grep -i "Time zone:"|awk -F":" '{print $2}'|sed "s/
 userFullName=$(awk -v user="$USER" -F":" 'user==$1{print $5}' /etc/passwd)
 
 # Build the commit command from the date,timezone and user name.
-fullComment=$(echo \"$currDate $currTimeZone "-" $userFullName "-" $userComment\")
+fullComment=$(echo \"$userFullName "-" $currDate $currTimeZone "-" $userComment.\")
 fullCommand=$(echo "git commit -m" $fullComment)
 
 # Execute the command.
