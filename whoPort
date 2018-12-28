@@ -1,0 +1,25 @@
+#!/bin/bash
+
+whoRunning=$(id|awk '{print $1}'|awk -F"=" '{print $2}')
+if [ "$whoRunning" != "0(root)" ] ; then
+	echo -e "must be run by root."
+  exit 1
+fi
+
+if [ "$#" != "1" ]; then
+  echo -e "Usage : whoPort [portnum]."
+  exit 1
+else
+  port=$1
+fi
+
+# Get the status.
+status=$(netstat -tulpn | grep ":$port" | tail -1)
+if [ "$status" = "" ]; then
+  echo -e "Port not in use."
+  exit 0
+else
+  service=$(echo $status|awk '{print $7}')
+  echo "port = " $port " used by service = " $service
+fi
+
