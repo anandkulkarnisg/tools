@@ -1,18 +1,43 @@
 #!/bin/bash
 # List How many commit in repositories are due in ~/git/ area.
+
+function showUsage()
+{
+  echo -e "Usage : dueCommits [git/bb] [all/due]."
+  echo -e "repository argument can be either git or bb [bit bucket ]."
+}
+
+if [ "$#" -ne 2 ]; then
+  showUsage
+  exit 1
+fi
+
+repoType=$1
+
+if [ "$repoType" != "git" -a "$repoType" != "bb" ]; then
+  echo -e "repo argument passed is invalid.It must be git/bb. please check."
+  showUsage
+  exit 1
+fi
+
+repoDir="git"
+if [ "$repoType" = "bb" ]; then
+  repoDir="bitbucket"
+fi
+
 cwd=$PWD
-gitDir=$HOME/git
+gitDir=$HOME/$repoDir
 dirList=$(ls -lrt $gitDir/ | grep -i ^d | grep -v "external" | awk '{print $9}')
 countDueItems=0
 for dirItem in $dirList
 do
-	cd $HOME/git/$dirItem
+	cd $HOME/$repoDir/$dirItem
 	dueCount=$(git status|egrep -i "Modified:|deleted:"|wc -l)
 	if [ $dueCount -ge 1 ]; then
 		echo -e "There are $dueCount commits due in : $dirItem"
 		countDueItems=$((countDueItems+1))
 	else
-		if [ "$1" = "all" ]; then
+		if [ "$2" = "all" ]; then
 			echo -e "$dirItem is clean."
 		fi
 	fi
