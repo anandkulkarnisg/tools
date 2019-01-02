@@ -6,7 +6,7 @@ whichMachine=$(uname -a | awk '{print $2}')
 if [ "$whichMachine" = "ubuntu" ]; then
   tiddlyPath=$HOME/bitbucket/tiddlywiki
 else
-  tiddlyPath=$HOME/tiddlyWiki
+  tiddlyPath=$HOME/tiddlywiki
 fi
 
 keepItems=10
