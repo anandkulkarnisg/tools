@@ -1,7 +1,14 @@
 #!/bin/bash
 # strip away cropping of the old versions of the tiddlyWiki. Decide how many to keep via below argument.
 
-tiddlyPath="$HOME/tiddlyWiki"
+whichMachine=$(uname -a | awk '{print $2}')
+
+if [ "$whichMachine" = "ubuntu" ]; then
+  tiddlyPath=$HOME/bitbucket/tiddlywiki
+else
+  tiddlyPath=$HOME/tiddlyWiki
+fi
+
 keepItems=10
 filePattern="TiddlyWiki.*.*.html"
 
