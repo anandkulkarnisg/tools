@@ -32,7 +32,9 @@ countDueItems=0
 for dirItem in $dirList
 do
 	cd $HOME/$repoDir/$dirItem
-	dueCount=$(git status|egrep -i "Modified:|deleted:"|wc -l)
+	dueCount=$(git status|egrep -i "Modified:|deleted:|new file:"|wc -l)
+  unTrackedCount=$(git ls-files --others --exclude-standard|wc -l)
+  dueCount=$((dueCount + unTrackedCount))
 	if [ $dueCount -ge 1 ]; then
 		echo -e "There are $dueCount commits due in : $dirItem"
 		countDueItems=$((countDueItems+1))
