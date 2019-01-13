@@ -22,4 +22,12 @@ eval $fullCommand
 echo "Pushing the changes to git now"
 read -p "Press any key to continue..." -n1 -s
 git push -v
+
+# sync the tiddlywiki updates to the fedora machine.
+whichMachine=$(uname -a | awk '{print $2}')
+if [ "$whichMachine" = "ubuntu" ]; then
+  echo -e "Pushing the updates to the Fedora machine."
+  tiddlyUpdate 
+fi
+
 exit 0

@@ -1,0 +1,7 @@
+#!/bin/bash
+currDir=$PWD
+cd $HOME/bitbucket/tiddlywiki
+git pull -v
+purgeTiddly
+cd $currDir
+exit 0
