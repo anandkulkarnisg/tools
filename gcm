@@ -27,7 +27,7 @@ git push -v
 whichMachine=$(uname -a | awk '{print $2}')
 if [ "$whichMachine" = "ubuntu" ]; then
   echo -e "Pushing the updates to the Fedora machine."
-  tiddlyUpdate 
+  ssh -t anand@ldnpsr2937.intranet.barcapint.com "updateTiddly"
 fi
 
 exit 0
