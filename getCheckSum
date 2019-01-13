@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ "$#" -ne "1" ]; then
+  echo -e "Proper Usage : $0 [file extension]" 
+  exit 1
+fi
+
+fileList=$(eval "ls *.$1"|tr "\n" " ")
+checkSumTool=/usr/bin/sha256sum
+checkSumName=$(basename $checkSumTool)
+
+for fileItem in $fileList
+do
+  checkSumFile=$fileItem.${checkSumName}.txt
+  $checkSumTool $fileItem > $checkSumFile
+  echo -e "Finished with file" $fileItem
+done
+
