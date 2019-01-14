@@ -1,0 +1,17 @@
+#!/bin/bash
+
+currDir=$PWD
+repoFolder=$HOME/git/tools
+
+if [ "$1" = "tiddlywiki" ]; then
+  repoFolder=$HOME/bitbucket/tiddlywiki 
+fi
+
+cd $repoFolder
+git pull -v
+
+if [ "$repoFolder" = "tiddlywiki" ]; then
+  purgeTiddly
+fi
+cd $currDir
+exit 0
