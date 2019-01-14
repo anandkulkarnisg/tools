@@ -7,6 +7,12 @@ else
   userComment=$1
 fi
 
+whichMachine=$(uname -a | awk '{print $2}')
+if [ "$whichMachine" = "ubuntu" ]; then
+  echo -e "Adding files to the git for commit."
+  git add .
+fi
+
 # Generate git commit command with proper user and date time stamp details.
 currDate=$(date +'%d/%m/%Y %H:%M:%S:%3N')
 currTimeZone=$(timedatectl | grep -i "Time zone:"|awk -F":" '{print $2}'|sed "s/ //g")
