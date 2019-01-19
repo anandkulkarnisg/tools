@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# verify only root can run this tool.
+runUser=$(id|awk '{print $1}'|awk -F"=" '{print $2}')
+if [ "$runUser" != "0(root)" ] ; then
+	echo -e "must be run by root."
+  exit 1
+fi
+
+# bad number of arguments kick out with exit error code.
+if [ "$#" != "1" -a "$#" != "2" ]; then
+  echo -e "Usage : $0 [k/nk] [pkgname]"
+  echo -e "The first argument must be k or nk. k is for kernel only packages and nk is for non kernel packages. For nk packages you can optionally specify pattern on which updates will be filtered."
+  exit 1
+fi
+
+pkgType=$1
+pkgName=$2
+
+# validate the passed argument 1
+if [ "$pkgType" != "k" -a "$pkgType" != "nk" ]; then
+  echo -e "Usage : $0 [k/nk] [pkgname]"
+  echo -e "The first argument is invalid. It must either be k or nk. currently it is $pkgType."
+  exit 1
+fi
+
+baseCommand="dnf check-update | grep -v \"pkgType\" | egrep -v \"Last metadata|Obsoleting\"|grep -v ^$"
+
+if [ "$pkgType" = "k" ]; then
+  # Manage the kernel package update.
+  baseCommand=$(echo $baseCommand | sed "s/grep -v \"pkgType\"/grep -i \"kernel\"|grep -i ^kernel/g")
+
+  echo "running the command ---> " $baseCommand
+  pkgCount=$(eval $baseCommand|wc -l|awk '{print $1}')
+
+  if [ $pkgCount -gt 0 ]; then
+	echo -e "$pkgCount packages found needing an update."
+	baseCommand=$(echo $baseCommand " | awk '{print \$1}'|tr \"\n\" \" \" | xargs dnf update -y")
+	echo "running the command ---> $baseCommand"
+	eval $baseCommand
+  else
+  	echo -e "Cant find any package to update.Exiting gracefully."
+  fi
+else
+  # Manage the non kernel package update.
+  baseCommand=$(echo $baseCommand | sed "s/pkgType/kernel/g")		
+  echo -e "Looking for non kernel packages."
+
+  if [ "$pkgName" != "" ]; then
+     baseCommand=$(echo $baseCommand "|grep -i \"$pkgName\"")
+  fi	  
+
+  echo "running the command ---> " $baseCommand	
+  pkgCount=$(eval $baseCommand|wc -l|awk '{print $1}')
+
+  if [ $pkgCount -gt 0 ]; then
+        echo -e "$pkgCount packages found needing an update."
+        baseCommand=$(echo $baseCommand " | awk '{print \$1}'|tr \"\n\" \" \" | xargs dnf update -y")
+        echo "running the command ---> $baseCommand"
+        eval $baseCommand
+  else
+        echo -e "Cant find any package to update.Exiting gracefully."
+  fi
+fi
+
+exit 0 
