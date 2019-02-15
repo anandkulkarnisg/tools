@@ -34,10 +34,19 @@ if [ "$pkgType" = "k" ]; then
   pkgCount=$(eval $baseCommand|wc -l|awk '{print $1}')
 
   if [ $pkgCount -gt 0 ]; then
-	echo -e "$pkgCount packages found needing an update."
-	baseCommand=$(echo $baseCommand " | awk '{print \$1}'|tr \"\n\" \" \" | xargs dnf update -y")
-	echo "running the command ---> $baseCommand"
-	eval $baseCommand
+  	echo -e "$pkgCount packages found needing an update."
+	  baseCommand=$(echo $baseCommand " | awk '{print \$1}'|tr \"\n\" \" \" | xargs dnf update -y")
+    read -r -p "Are you sure to proceed to run the command? [y/N] " response
+    case "$response" in
+      [yY][eE][sS]|[yY]) 
+          echo "running the command ---> $baseCommand"
+          eval $baseCommand
+          ;;
+      *)
+          echo -e "recieved a no.Exiting gracefully."
+          exit 0
+          ;;
+    esac
   else
   	echo -e "Cant find any package to update.Exiting gracefully."
   fi
@@ -47,17 +56,25 @@ else
   echo -e "Looking for non kernel packages."
 
   if [ "$pkgName" != "" ]; then
-     baseCommand=$(echo $baseCommand "|grep -i \"$pkgName\"")
+     baseCommand=$(echo $baseCommand "|egrep -i \"$pkgName\"")
   fi	  
-
   echo "running the command ---> " $baseCommand	
   pkgCount=$(eval $baseCommand|wc -l|awk '{print $1}')
 
   if [ $pkgCount -gt 0 ]; then
         echo -e "$pkgCount packages found needing an update."
-        baseCommand=$(echo $baseCommand " | awk '{print \$1}'|tr \"\n\" \" \" | xargs dnf update -y")
-        echo "running the command ---> $baseCommand"
-        eval $baseCommand
+        read -r -p "Are you sure to proceed to run the command? [y/N] " response
+        case "$response" in
+          [yY][eE][sS]|[yY])
+          baseCommand=$(echo $baseCommand " | awk '{print \$1}'|tr \"\n\" \" \" | xargs dnf update -y")
+          echo "running the command ---> $baseCommand"
+          eval $baseCommand
+          ;;
+        *)
+          echo -e "recieved a no.Exiting gracefully."
+          exit 0
+          ;;
+        esac
   else
         echo -e "Cant find any package to update.Exiting gracefully."
   fi

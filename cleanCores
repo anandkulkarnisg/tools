@@ -3,7 +3,7 @@
 currentDir=$(pwd)
 corePath=~anand/cores/
 cd $corePath
-totalCount=$(ls -lrt ~/cores/core.* | awk '{print $9}' | grep -v ^$ | wc -l | sed "s/ //g")
+totalCount=$(ls -lrt ~/cores/core.* 2>>/dev/null | grep -v "cannot access" | awk '{print $9}' | grep -v ^$ | wc -l)
 keepCount=$1
 
 if [ "$keepCount" = "all" ]; then
