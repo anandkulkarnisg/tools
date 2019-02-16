@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ "$#" != "2" ]; then
+  echo -e "Usage : $0 [11/14/17] [fileName]" 
+  exit 1
+fi
+
+buildType=$1
+buildSrcFile=$2
+
+if [ "$buildType" != "11" -a "$buildType" != "14" -a "$buildType" != "17" ]; then
+  echo  -e "Usage : Invalid first argument. It should be one of these. 11/14/17."
+  exit 1
+fi
+
+objName=${buildSrcFile%.cpp}.out
+executeCommand="g++ -std=c++$buildType -Wall $buildSrcFile -o $objName"
+echo -e "Running command : $executeCommand"
+eval $executeCommand
