@@ -32,9 +32,10 @@ read -p "Press any key to continue..." -n1 -s
 git push -v
 
 # sync the tiddlywiki updates to the fedora machine.
-if [ "$whichMachine" = "ubuntu" ]; then
-  echo -e "Pushing the updates to the Fedora machine."
-  ssh -t anand@ldnpsr2937.intranet.barcapint.com  "syncRepo $repoName"
-fi
+# Anand Kulkarni - 16/02/2018 - disabling the below as a sync up is no more needed since VM share same read-write mount as host os [ Fedora ].
+#if [ "$whichMachine" = "ubuntu" ]; then
+#  echo -e "Pushing the updates to the Fedora machine."
+#  ssh -t anand@ldnpsr2937.intranet.barcapint.com  "syncRepo $repoName"
+#fi
 
 exit 0
