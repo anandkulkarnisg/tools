@@ -1,0 +1,12 @@
+#!/bin/bash
+
+function checkRootUser
+{
+  runUser=$(id|awk '{print $1}'|awk -F"=" '{print $2}')
+  if [ "$runUser" != "0(root)" ] ; then
+    echo -e "must be run by root."
+    exit 1
+  fi
+}
+checkRootUser
+vmware-modconfig --console --install-all

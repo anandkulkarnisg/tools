@@ -1,3 +1,9 @@
 #!/bin/bash
 # Usage : $0 [ro/rw]
+
+if [ "$#" != "1" ]; then
+  echo -e "Usage : $0 [ro/rw].Exiting with return value of 1."
+  exit 1
+fi
+
 grep "[[:space:]]$1[[:space:],]" /proc/mounts 

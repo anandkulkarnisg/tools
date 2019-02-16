@@ -1,0 +1,8 @@
+#!/bin/bash
+repoDir=$HOME/git/tools
+mountTypeCheck="ro"
+readOnlyMountCount=$($HOME/git/tools/listReadWriteMounts $mountTypeCheck|egrep -v "tmpfs"|wc -l|sed "s/ //g")
+if [ $readOnlyMountCount -gt 0 ]; then
+  echo -e "Warning : one or more file systems have been mounted in read only. Please run fsck -y [mount] to verify further."
+  echo -e "Alternatively check the boot.log for any specific issues in mounting at /var/log/"
+fi
