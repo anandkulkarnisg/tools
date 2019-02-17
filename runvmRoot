@@ -1,0 +1,25 @@
+#!/bin/bash
+# Command to invoke a vm machine manually.
+
+# Enable the xhost.
+xhost +
+
+# Core binary.
+vmwareBin="/usr/lib/vmware/bin/vmware-vmx"
+
+# Arguments.
+argSwitch1="vmx.stdio.keep=TRUE"
+argSwitch2="product=1;name=\"VMware Workstation;version=15.0.2;buildnumber=10952284;licensename=VMware Workstation;licenseversion=15.0; -@ duplex=3;msgs=ui\""
+
+# Specific VM to invoke.
+machineImageLocation="\"/run/media/anand/Windows/os-common/repo/fedora/vmware/fc28/Ubuntu 64-bit - tiddlyWiki/Ubuntu 64-bit - tiddlyWiki.vmx\""
+
+# The final command to be run.
+runcmd=$(echo "nohup" $vmwareBin "-s" $argSwitch1 "-#" $argSwitch2 $machineImageLocation "&")
+
+# use for debug below.
+#echo "running the command : " $runcmd
+
+# execute the command.
+su -c "eval $runcmd"
+exit 0
