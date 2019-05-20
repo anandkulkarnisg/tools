@@ -1,0 +1,11 @@
+#!/bin/bash
+
+export processId=$1
+if [ "$2" = "i" ]; then
+    ieswitch="i"
+else
+    ieswitch="v"
+fi
+patterns=$3
+runCmd="strace -p $processId 2>&1 | tail -f | grep -$ieswitch ^\"$patterns\""
+eval $runCmd

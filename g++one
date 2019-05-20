@@ -2,7 +2,7 @@
 
 # First get the directory of the execution.
 
-if [ $# -ne 1 ] ; then
+if [ $# -ne 2 ] ; then
 echo -e "Error no input file detected"
 exit 1
 fi
@@ -12,6 +12,7 @@ echo -e "Switching to working directory : $work_dir"
 cd $PWD
 
 src_file=$1
+cppStandard=$2
 obj_file=${src_file%.cpp}.out
 
 obj_count=$(ls -lrt $obj_file 2>/dev/null | wc -l | sed "s/ //g")
@@ -25,7 +26,7 @@ echo -e "Removing $obj_file binary file.".
 rm -f $1.out
 fi
 
-cpp_standard="-std=c++11"
+cpp_standard="-std=c++${cppStandard}"
 switches="$cpp_standard -g -w -fpermissive -Wconversion-null"
 
 echo -e Compiling $src_file
