@@ -1,0 +1,18 @@
+#!/bin/bash
+# Author : Anand Kulkarni.
+# Date : 30/05/2019.
+# Synopsis : A simple utility to shut down the q process with sequential port numbers.
+# Usage : $0 [startPort] [iterations].
+# Ex:- $0 5000 10 -> This will shutdown all q processes starting from 5000 to 5009.
+
+if [ $# -ne 2 ] ; then
+    echo -e "Usage : $0 [startPort] [iterations]"
+    exit 1
+fi
+
+startPort=$1
+iterations=$2
+mostUnlikelyUsedPort=65535
+
+export QHOME=$HOME/coding/q
+nohup $QHOME/l32/q $HOME/tools/stop.q -p $mostUnlikelyUsedPort -startPort $startPort -iterations $iterations &

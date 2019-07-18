@@ -1,0 +1,25 @@
+#!/bin/bash
+# Author : Anand Kulkarni
+# Date : 30/05/2019
+# Synopsis : A simple tool to spawn a set of q processes from a starting port seqentially for requested range.
+
+if [ $# -ne 2 ]; then
+    echo -e "Usage : The correct usage of the $0 is : $0 [basePortNum] [numProcesses]"
+    echo -e "Ex : $0 5000 10, This will spawn 10 q processes from 5000 to 5009 ports" 
+    exit 1
+fi
+
+basePortNum=$1
+numIterations=$2
+tmpPath="/tmp"
+
+startSeed=$basePortNum
+endSeed=$(expr $startSeed + $numIterations)
+endSeed=$(expr $endSeed - 1)
+portList=$(seq $startSeed $endSeed)
+cd $tmpPath
+
+for portItem in $portList
+do
+    nohup $HOME/runqat $portItem &
+done

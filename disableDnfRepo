@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Author : Anand Kulkarni.
+# Synopsis : This is a tool used to disable the dnf repository. It accepts a single parameter which could be either all or single repo name or list of repo names seperated by pipe.
+# It then runs and attempts to disable the repository. This tool could be used to switch off bad/non performant repositories.
+# Usage : $0 [all/repoName/repoList(pipe seperated)] d/e[disable/enable]
+
+if [ $# -ne 2 ]; then
+    echo -e "Invalid Usage : $0 [all/repoName/repoList(pipe seperated)] [d/e(disable/enable)]"
+    exit 1
+fi
+
+repoDetails=$1
+actionType=$2
+
+if [ "$actionType" != "e" -a "$actionType" != "d" ]; then
+    echo -e "Invalid action switch parameter. It should be either e/d(enable/disable)"
+    exit 1
+else
+    if [ "$actionType" = "e" ]; then
+        actionType="enabled"
+    else
+        actionType="disabled"
+    fi
+fi
+
+
+if [ "$repoDetails" = "all" -a "$actionType" = "disabled" ]; then
+    internalRepoList=$(dnf repolist all 2>&1 |grep -i enabled|awk '{ print $1 }'|sed "s/\*//g")
+else
+    internalRepoList=$(ls -lrt /etc/yum.repos.d/|awk '{print $9}'|sed "s/.repo//g"|grep -v ^$)
+fi
+
+runcmdPrefix=$(echo "dnf config-manager --set-$actionType")
+for repoItem in $internalRepoList
+    do
+        runcmd=$(echo $runcmdPrefix $repoItem)
+        echo -e "The command run will be : $runcmd"
+        eval $runcmd
+    done 
