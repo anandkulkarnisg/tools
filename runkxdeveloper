@@ -1,0 +1,6 @@
+#!/bin/bash
+source /opt/kxdeveloper/config/config.profile 
+export QHOME=~/coding/q64
+nohup rlwrap $QHOME/l64/q /opt/kxdeveloper/launcher.q_ $@ &
+sleep 5
+nohup firefox "http://localhost:5020/ax/index.html#ws=anandLinux" &
