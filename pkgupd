@@ -15,10 +15,10 @@ function getLogFileName
   appName=$2
   logDir=$3
   logFileName=$(echo -e "$logDir/dnfupd.$appType.$appName.${var1}.${var2}.log" | sed "s/|/_/g"| sed "s/\./_/g"| sed "s/:/_/g")
-  echo $logFileName
+  echo $logFileName | sed "s/_log/.log/g"
 }
 
 export logFileDir="/var/log/dnfupd"
 export logFileName=$(getLogFileName $1 $2 $logFileDir)
 dnfupd $1 $2 2>&1 | tee -a $logFileName
-exit 0 
+exit 0

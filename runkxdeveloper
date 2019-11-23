@@ -1,6 +1,21 @@
 #!/bin/bash
+
+# Setup the initial config and profile.
 source /opt/kxdeveloper/config/config.profile 
 export QHOME=~/coding/q64
+export sleepTimeQty=5
+export profileUser="anandLinux"
+export clientUrl="http://localhost:5020/ax/index.html#ws=${profileUser}"
+export profileRoot="/opt/kxdeveloper/data/workspace"
+export profileUser="anandLinux"
+export profileFolder="${profileRoot}/__nouser__/${profileUser}"
+
+# Invoke the kxdeveloper server side process.
+cd $profileFolder
 nohup rlwrap $QHOME/l64/q /opt/kxdeveloper/launcher.q_ $@ &
-sleep 5
-nohup firefox "http://localhost:5020/ax/index.html#ws=anandLinux" &
+
+# Sleep so that sufficient time is given for service to be ready before client launch.
+sleep ${sleepTimeQty}
+
+# Spin off the service finally.
+nohup firefox "${clientUrl}" &
