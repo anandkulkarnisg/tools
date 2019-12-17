@@ -1,12 +1,15 @@
 #!/bin/bash
 
 # Setup the initial config and profile.
-source /opt/kxdeveloper/config/config.profile 
+export kxRoot=/opt/kxdeveloper/
+source ${kxRoot}/config/config.profile 
+
+# Set the required env variables.
 export QHOME=~/coding/q64
 export sleepTimeQty=5
 export profileUser="anandLinux"
 export clientUrl="http://localhost:5020/ax/index.html#ws=${profileUser}"
-export profileRoot="/opt/kxdeveloper/data/workspace"
+export profileRoot="${kxRoot}/data/workspace"
 export profileUser="anandLinux"
 export profileFolder="${profileRoot}/__nouser__/${profileUser}"
 
