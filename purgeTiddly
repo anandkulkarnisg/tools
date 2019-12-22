@@ -1,14 +1,8 @@
 #!/bin/bash
 # strip away cropping of the old versions of the tiddlyWiki. Decide how many to keep via below argument.
+# Anand Kulkarni - 18/12/2019 - Removing support for ubuntu machines for wiki maintainance.
 
-whichMachine=$(uname -a | awk '{print $2}')
-
-if [ "$whichMachine" = "ubuntu" ]; then
-  tiddlyPath=$HOME/bitbucket/tiddlywiki
-else
-  tiddlyPath=$HOME/tiddlywiki
-fi
-
+tiddlyPath=$HOME/tiddlywiki
 keepItems=10
 filePattern="TiddlyWiki.*.*.html"
 
