@@ -12,7 +12,6 @@ export serviceHost="localhost"
 export servicePort="5020"
 export clientUrl="http://${serviceHost}:${servicePort}/ax/index.html#ws=${profileUser}"
 export profileRoot="${kxRoot}/data/workspace"
-export profileUser="anandLinux"
 export profileFolder="${profileRoot}/__nouser__/${profileUser}"
 
 # Invoke the kxdeveloper server side process.
