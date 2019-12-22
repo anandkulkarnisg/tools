@@ -8,16 +8,19 @@ source ${kxRoot}/config/config.profile
 export QHOME=~/coding/q64
 export sleepTimeQty=5
 export profileUser="anandLinux"
-export clientUrl="http://localhost:5020/ax/index.html#ws=${profileUser}"
+export serviceHost="localhost"
+export servicePort="5020"
+export clientUrl="http://${serviceHost}:${servicePort}/ax/index.html#ws=${profileUser}"
 export profileRoot="${kxRoot}/data/workspace"
 export profileUser="anandLinux"
 export profileFolder="${profileRoot}/__nouser__/${profileUser}"
 
 # Invoke the kxdeveloper server side process.
 cd $profileFolder
-nohup rlwrap $QHOME/l64/q /opt/kxdeveloper/launcher.q_ $@ &
+nohup rlwrap $QHOME/l64/q ${kxRoot}/launcher.q_ $@ &
 
 # Sleep so that sufficient time is given for service to be ready before client launch.
+echo -e "Sleeping for ${sleepTimeQty} seconds for service to start..."
 sleep ${sleepTimeQty}
 
 # Spin off the service finally.
