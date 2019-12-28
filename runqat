@@ -4,8 +4,9 @@ function isNumber()
 {
     numPattern='^[0-9]+$'
     if ! [[ $1 =~ $numPattern ]] ; then
-        echo -e "error: Not a number argument! Exiting with error."
-        exit 1
+        echo -e "no"
+    else
+        echo -e "yes"
     fi
 }
 
@@ -14,7 +15,11 @@ if [ "$#" -ne 1 ]; then
     echo -e "Usage : runqat [port]"
     exit 1
 else
-    isNumber $1
+    isPortNumeric=$(isNumber $1)
+    if [ "$isPortNumeric" = "no" ]; then
+        echo -e "error: Not a number argument! Exiting with error."
+        exit 1
+    fi
     if [ $1 -le 1023 -o $1 -ge 65536 ]; then
         echo -e "Please pass a port greater than 1023(2^10-1) and less than 65536(2^16-1)."
         exit 1
