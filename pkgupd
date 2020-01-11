@@ -19,6 +19,10 @@ function getLogFileName
 }
 
 export logFileDir="/var/log/dnfupd"
+if [ ! -d "$logFileDir" ]; then
+	echo -e "creating Log dir $logFileDir as it does not exist."
+	mkdir -p $logFileDir
+fi
 export logFileName=$(getLogFileName $1 $2 $logFileDir)
 dnfupd $1 $2 2>&1 | tee -a $logFileName
 exit 0
