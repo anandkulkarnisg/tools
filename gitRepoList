@@ -9,5 +9,5 @@ userId="anandkulkarnisg"
 tempFile="/tmp/repo.list.txt"
 
 wget -qO ${tempFile} ${baseUrl}/${userId}/?tab=repositories
-cat ${tempFile}|grep "name codeRepository"|awk -F"/" '{print $3}'|awk '{print $1}'|sed "s/\"//g"
+cat ${tempFile}|grep "name codeRepository"|awk -F"/" '{print $3}'|awk '{print $1}'|sed "s/\"//g"|sort|uniq
 rm -f ${tempFile}
