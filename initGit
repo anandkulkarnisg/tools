@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Initialize a git repository global settings after an upgrade/initial os installation.
+# wrap this in a map of variable:value and read the map and initialize the variables.
+
+git config --global user.name "anandkulkarnisg"
+git config --global user.email "anand.kulkarni.sg@gmail.com"
+git config --global credential.helper /usr/libexec/git-core/git-credential-libsecret 
+
+exit 0

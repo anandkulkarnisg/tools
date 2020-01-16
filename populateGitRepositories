@@ -1,0 +1,7 @@
+#!/bin/bash
+# Synopsis : A simple tool to pull and populate all git repositories.
+# It initializes the git global config and remembers password one time and maintains it via libsecret tool.
+# Then it simply pulls package by package and populates it in given folder.
+# Author : Anand Kulkarni
+# usage : $0 [baseFolder] [gitUserId] [initGit Y/N].
+
