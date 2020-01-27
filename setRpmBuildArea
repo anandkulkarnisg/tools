@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export rpmBuildFolderList="RPMS SOURCES SPECS BUILD SRPMS BUILDROOT"
+for rpmFolder in ${rpmBuildFolderList}
+do
+	mkdir -p ${HOME}/rpmbuild/${rpmFolder}
+done
