@@ -1,0 +1,6 @@
+#!/usr//bin/bash
+# Author : Anand Kulkarni
+# Synopsis : 
+nonKernelPkgList=$(dnf check-update | grep -v kernel | grep -v ^$ | grep -v "Last metadata expiration check" | grep -v "Obsoleting Packages" | awk '{print $1}' | awk -F"." '{print $1}' | tr "\n" "|")
+echo -e "Preparing to Install this package list : $nonKernelPkgList"
+pkgupd nk "${nonKernelPkgList}"
