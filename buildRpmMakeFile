@@ -1,0 +1,35 @@
+#!/bin/bash
+
+if [ "$#" -ne 1 ]; then
+	echo -e "Usage : $0 [buildConfigFile]"
+	echo -e "Ex:- $0 /opt/squirrel-client-1.0/installers/buildMake.conf"
+	exit 0
+fi
+
+# Validate if the config file actually exists.
+if [ ! -f "$1" ]; then
+	echo -e "The config file $1 could not be found.Exiting with error.."
+	exit 1
+fi 
+
+# set the config file variables to be used in rest of the code.
+for configItem in $(cat $1)
+do
+	varName=$(echo $configItem|awk -F"|" '{print $1}')
+	varValue=$(echo $configItem|awk -F"|" '{print $2}')
+	eval "export $varName=$varValue"
+done
+
+export outDir=${baseFolderPath}/${outputFileName}
+echo -e "Generating the output to the path = " $outDir
+echo -e "buildroot : ">${outDir}
+listFiles ${baseFolderPath} d|sed "s/.*/\tmkdir -p \${RPM_BUILD_ROOT}&/g" >>${outDir}
+echo -e "install : ">>${outDir}
+listFiles ${baseFolderPath} f|sed "s/.*/\tcp \${RPM_BUILD_DIR}& \${RPM_BUILD_ROOT}&/g">>${outDir}
+
+# now run the post processing script on the Makefile.
+if [ "$postMakeFileScript" != "" ]; then
+	eval cat ${outDir}|sed $postMakeFileScript > /tmp/Makefile.tmp.$$
+	mv /tmp/Makefile.tmp.$$ ${outDir}
+fi
+echo -e "Finished generating the file " $outDir ".Verify the same."

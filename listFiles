@@ -1,0 +1,34 @@
+#!/bin/bash
+# Author : Anand Kulkarni
+# Synopsis : Simple tool required for rpm package management tool to generate directory listing and file listing of a folder of installation.
+# It helps to generate these lists and manipulate them on the fly to produce installable and configurable MakeFile dynamic. This is further used in building a custom rpm package faster.
+# With least effort.
+
+function displayUsage
+{
+	echo -e "Usage $0 [base-folder] [objectType]. Ex:- $0 $HOME/samplefolder [d/f/l]"
+}
+
+if [ "$#" -ne 2 ]; then
+	displayUsage 
+	echo -e "Exiting with error code 1..."
+	exit 1
+fi
+
+if [ ! -d "$1" ]; then
+	echo -e "The first parameter passed is not a folder. Please verify.Below is the usage help."
+	displayUsage
+	echo -e "Exiting with error code 1..."
+	exit 1
+fi
+
+baseFolder=$1
+objectType=$2
+
+if [ "${objectType}" != "f" -a "${objectType}" != "d" -a "${objectType}" != "l" ]; then
+	echo -e "The switch passed should be either [d/f/l]. A directory/file/symlink type"
+	echo -e "Exiting with error code 1..."
+	exit 1
+fi
+
+find ${baseFolder} -type ${objectType}
