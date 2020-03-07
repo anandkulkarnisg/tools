@@ -20,6 +20,11 @@ do
 	eval "export $varName=$varValue"
 done
 
+if [ "$deleteEmptySpaceDir" = "yes" ]; then
+	echo -e "Removing empty space containing folders and their contents from being added to the rpm fileList"
+	find ${baseFolderPath} -type d|grep " "|sed "s/.*/\"&\"/g"|xargs rm -rf
+fi
+
 export outDir=${baseFolderPath}/${outputFileName}
 echo -e "Generating the output to the path = " $outDir
 echo -e "buildroot : ">${outDir}
