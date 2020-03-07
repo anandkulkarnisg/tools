@@ -31,4 +31,7 @@ if [ "${objectType}" != "f" -a "${objectType}" != "d" -a "${objectType}" != "l" 
 	exit 1
 fi
 
-find ${baseFolder} -type ${objectType}
+# sources for sed trick below,
+# https://unix.stackexchange.com/questions/353234/add-double-quote-if-there-is-white-space-between-words-in-column
+# https://rpm-list.redhat.narkive.com/7WUOZXa6/basic-question-space-in-file-name
+find ${baseFolder} -type ${objectType}|sed 's/[^ |][^|]* [^|]*[^| ]/"&"/g'

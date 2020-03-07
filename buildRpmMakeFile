@@ -33,3 +33,9 @@ if [ "$postMakeFileScript" != "" ]; then
 	mv /tmp/Makefile.tmp.$$ ${outDir}
 fi
 echo -e "Finished generating the file " $outDir ".Verify the same."
+echo -e "Starting to generate the file list for the package."
+if [ "$baseFolderPath" != "" ]; then
+	listFiles $baseFolderPath f> $rpmFileList
+fi
+echo -e "Finished generating the file list for package."
+exit 0
