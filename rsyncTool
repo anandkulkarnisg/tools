@@ -1,0 +1,66 @@
+#!/bin/bash
+# Synopsis : A simple rsync based utility to synchronize onedrive folder from the local folder using a flexible config file.
+# Author : Anand Kulkarni
+
+function showProperUsageHelp
+{
+	echo -e "Usage : $0 [rsync-config-file].The rsync config file is a comma[,] seperated list of variable and value items"
+}
+
+if [ "$#" -ne 1 ]; then
+	showProperUsageHelp
+	echo -e "Exiting with error code 1..."
+	exit 1
+fi
+
+if [ ! -f ${1} ]; then
+	echo -e "Can not find the config file passed as a parameter.Exiting with failure error code 1..."
+	exit 1
+fi
+
+# Try to import and set the config file variables.
+export rsyncConfigFile=$1
+# set the config file variables to be used in rest of the code.
+for configItem in $(cat ${rsyncConfigFile})
+do
+  varName=$(echo $configItem|awk -F"|" '{print $1}')
+  varValue=$(echo $configItem|awk -F"|" '{print $2}')
+  eval "export $varName=$varValue"
+done
+
+# Validate if atleast the mandatory config variables are set with some non null values.If any exit with error.
+mandatoryConfigVarList="srcFolder destFolder exclusionList"
+
+for configVar in ${mandatoryConfigVarList}
+do
+	varVal=$(echo ${configVar})
+	if [ "${varVal}" = "" ]; then
+			echo -e "The variable ${configVar} is not set. This is a mandatory variable that is needed for rsync to work properly."
+			echo -e "The mandatory variable list is : ${mandatoryConfigVarList}."
+			echo -e "Exiting with error code of failure 1"
+			exit 1
+	fi
+done
+
+# We next build the required command for the execution of the rsync tool.
+export rsyncBin="rsync"
+if [ "${rsyncSwitches}" = "" ]; then
+	export rsyncSwitches="-av"
+else
+	export rsyncSwitches="-${rsyncSwitches}"
+fi
+
+# We build the rsync exclusion command line param list here.
+export exclusionList=$(echo ${exclusionList}|sed "s/,/ /g")
+baseCommand="--exclude='replacePattern'"
+for exclusionItem in ${exclusionList}
+do
+	cmd=$(echo $baseCommand|sed "s/replacePattern/${exclusionItem}/g")
+	exclusionSwitches=$(echo $exclusionSwitches $cmd)
+done
+
+# We are ready to invoke the final command here.
+finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} ${srcFolder} ${destFolder}"
+echo "Will execute the command :---> ${finalExecutionCommand}"
+eval ${finalExecutionCommand}
+exit 0
