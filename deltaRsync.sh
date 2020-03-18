@@ -18,9 +18,12 @@ https://serverfault.com/questions/538767/how-to-rsync-files-folders-from-a-speci
 https://unix.stackexchange.com/questions/424319/how-to-find-files-based-on-timestamp
 https://unix.stackexchange.com/questions/45926/display-time-stamp-in-dd-mm-yyyy-hhmmssms-in-unix-or-linux
 
+#!/bin/bash
+
 srcFolder=$1
 destFolder=$2
-deltaListGeneratorCmd="rsync --progress --files-from=<(find ${srcFolder} -mtime -1 -type f | sed \"s/${srcFolder//\//\\/}//g\") ${srcFolder} ${destFolder}"
+export lastTimeStampSynced=$(cat lastSyncTimeStamp.conf)
+deltaListGeneratorCmd="rsync --progress --files-from=<(find ${srcFolder} -newermt \"${sinceTimeStamp}\" -type f | sed \"s/${srcFolder//\//\\/}//g\") ${srcFolder} ${destFolder}"
 echo -e "Attempting to execute the command : --> " ${deltaListGeneratorCmd}
 eval ${deltaListGeneratorCmd}
 exit 0
