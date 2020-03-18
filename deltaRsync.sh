@@ -23,6 +23,10 @@ a1384313@uklpaumar06a[PRD][~] $ eval ${execCommand}
 /home/a1384313/ak-kdb+-projects/kdb+/log4kdb/sessionfiles/anand2.txt
 a1384313@uklpaumar06a[PRD][~] $
 
+https://serverfault.com/questions/538767/how-to-rsync-files-folders-from-a-specific-date-forward/642231
+https://unix.stackexchange.com/questions/424319/how-to-find-files-based-on-timestamp
+https://unix.stackexchange.com/questions/45926/display-time-stamp-in-dd-mm-yyyy-hhmmssms-in-unix-or-linux
+
 srcFolder=$1
 destFolder=$2
 deltaListGeneratorCmd="rsync --progress --files-from=<(find ${srcFolder} -mtime -1 -type f | sed \"s/${srcFolder//\//\\/}//g\") ${srcFolder} ${destFolder}"
