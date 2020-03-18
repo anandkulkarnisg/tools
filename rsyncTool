@@ -50,6 +50,15 @@ else
 	export rsyncSwitches="-${rsyncSwitches}"
 fi
 
+# We next build the required optional parameter of sync type. This is either delta or full.
+# delta works faster and synchronizes only those files/folders since last synchronization.Full is slow and scans all the required folders recursively.
+# full is recommended only once a while.
+
+if [ "${rsyncType}" = "" ]; then
+	export rsyncType="delta"
+	echo -e "Defaulting the rsyncType to delta since no config was found.."
+fi
+
 # We build the rsync exclusion command line param list here.
 export exclusionList=$(echo ${exclusionList}|sed "s/,/ /g")
 baseCommand="--exclude='replacePattern'"
@@ -60,7 +69,52 @@ do
 done
 
 # We are ready to invoke the final command here.
-finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} ${srcFolder} ${destFolder}"
+echo -e "Running the rsync in ${rsyncType} mode..."
+rSyncConfigPath="$HOME/.config/rsynconf"
+if [ "${rsyncType}" = "full" ]; then
+	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} ${srcFolder} ${destFolder}"
+else
+	if [ ! -d ${rSyncConfigPath} ]; then
+		mkdir -p ${rSyncConfigPath}
+	fi 
+	export whichSyncId=$(echo $1|awk -F"." '{print $1}'|xargs basename)
+	export timeStampConf=${rSyncConfigPath}/${whichSyncId}.lastSyncTimeStamp.conf
+	if [ -f ${timeStampConf} ]; then
+		export lastTimeStampSynced=$(cat ${timeStampConf})
+		currentTimeStamp=$(date +'%Y-%m-%d');currentTimeStamp=$(echo ${currentTimeStamp}" 00:00:00")
+	else
+		echo -e "Defaulting sync time range to previous 24 hrs since no config found. Will be creating one now at : ${timeStampConf}"
+		lastTimeStampSynced=$(date +'%Y-%m-%d' --date="-1 day");lastTimeStampSynced=$(echo ${lastTimeStampSynced}" 00:00:00")
+	fi
+	echo ${currentTimeStamp}>${timeStampConf}
+	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} --progress --files-from=<(find ${srcFolder} -newermt \"${lastTimeStampSynced}\" -type f | sed \"s/${srcFolder//\//\\/}//g\") ${srcFolder} ${destFolder}"
+	
+fi	
+
 echo "Will execute the command :---> ${finalExecutionCommand}"
 eval ${finalExecutionCommand}
 exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

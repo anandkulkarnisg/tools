@@ -14,12 +14,12 @@ function checkRootUser
 
 function displayUsageHelp()
 {
-	echo -e "Usage : $0 [folder]. The folder can only be one of these values. [coderepo fedora win10]."
+	echo -e "Usage : $0 [folder]. The folder can only be one of these values. [coderepo fedora win10 largeCppTestDataFiles]."
 }
 
 function validateInputParameter()
 {
-	masterList="coderepo fedora win10"
+	masterList="coderepo fedora win10 largeCppTestDataFiles"
 	returnStatus="false"
 	for masterItem in ${masterList}
 	do
@@ -43,14 +43,14 @@ returnStatus=$(validateInputParameter $1)
 
 if [ "${returnStatus}" != "true" ]; then
 	echo -e "The input folder name is not reconginzed.Quitting the execution with error code 1.."
-	echo -e "The masterList is = [coderepo largeCppTestDataFiles fedora win10]."
+	echo -e "The masterList is = [coderepo fedora win10 largeCppTestDataFiles]."
 	exit 1
 fi
 
 # We now invoke the synchronization via rsyncTool.
 echo -e "Proceeding to synchronize the folder ${1} to oneDrive.."
 echo -e "Checking for status of the ExpanDrive mount..."
-statusCount=$(findmnt|grep "ExpanDrive/onedrive"|wc -l)
+statusCount=$(findmnt|grep "ExpanDrive/onedrive"|grep "rw"|wc -l)
 if [ $statusCount -eq 0 ]; then
 	echo -e "Error!! Can not find the onedrive mount of ExpanDrive via findmnt tool.Exiting with error code 1..."
 	exit 1
@@ -60,7 +60,7 @@ fi
 
 # Identify if the proper logFile name and redirect the log via pipe.
 logFileFolder="/var/log/onedrive-sync"
-logTimeStamp=$(date +%s)
+logTimeStamp=$(date +"%m-%d-%Y.%r"|sed "s/:/./g"|sed "s/ /./g")
 logFileName="${logFileFolder}/onedrivesync.${1}.${logTimeStamp}.log"
 echo -e "Will be logging to the logFile = ${logFileName}"
 
