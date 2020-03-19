@@ -81,11 +81,13 @@ else
 	export timeStampConf=${rSyncConfigPath}/${whichSyncId}.lastSyncTimeStamp.conf
 	if [ -f ${timeStampConf} ]; then
 		export lastTimeStampSynced=$(cat ${timeStampConf})
-		currentTimeStamp=$(date +'%Y-%m-%d');currentTimeStamp=$(echo ${currentTimeStamp}" 00:00:00")
 	else
 		echo -e "Defaulting sync time range to previous 24 hrs since no config found. Will be creating one now at : ${timeStampConf}"
-		lastTimeStampSynced=$(date +'%Y-%m-%d' --date="-1 day");lastTimeStampSynced=$(echo ${lastTimeStampSynced}" 00:00:00")
+		lastTimeStampSynced=$(date +'%Y-%m-%d' --date="-1 day");
+		lastTimeStampSynced=$(echo ${lastTimeStampSynced}" 00:00:00")
 	fi
+	currentTimeStamp=$(date +'%Y-%m-%d')
+	currentTimeStamp=$(echo ${currentTimeStamp}" 00:00:00")
 	echo ${currentTimeStamp}>${timeStampConf}
 	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} --progress --files-from=<(find ${srcFolder} -newermt \"${lastTimeStampSynced}\" -type f | sed \"s/${srcFolder//\//\\/}//g\") ${srcFolder} ${destFolder}"
 	
@@ -94,27 +96,3 @@ fi
 echo "Will execute the command :---> ${finalExecutionCommand}"
 eval ${finalExecutionCommand}
 exit 0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
