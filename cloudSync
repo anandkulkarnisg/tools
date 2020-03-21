@@ -2,13 +2,24 @@
 # Author   : Anand Kulkarni
 # Synopsis : Wrapper around the underlying oneDriveSync tool script.Automates the synchronization of the all requisite folders.
 
+if [ "$#" -ne 0 ]; then
+	echo -e "Warning : unwanted argument passed. This script does not need/accept arguments. Hence ignoring it.."
+fi
+
 export srcFolder="/run/media/anand/Windows/os-common/repo"
-export excludeFolderList="ExpanDrive|vmware" # Pipe seperate these items.
+export excludeFolderList="ExpanDrive" # Pipe seperate these items.
 export logFileDir="/var/log/onedrive-sync"
-export logFile="cloudsync.$(date +%d%m%Y_%H:%M:%S).log"
+export logFile="cloudsync.$(date +%d%m%Y_%H.%M.%S).log"
 
 dirList=$(ls -l ${srcFolder}|grep ^d|awk '{print $9}'|egrep -v "${excludeFolderList}"|tr '\n' ' ')
 for dir in ${dirList}
 do
-	oneDriveSync ${dir} 2&>1 | tee -a ${logFileDir}/${logFile}
+	oneDriveSync ${dir} 2>&1 | tee -a ${logFileDir}/${logFile}
 done
+
+# Run the automatic cleanup of logs area [ throw away anything older than 2 weeks ].
+echo -e "cleaning up any files older than 2 weeks [ 14 days ]...."
+find ${logFileDir} -type f -mtime +14 | xargs rm -f
+
+# Gracefully exit with success.
+exit 0 

@@ -14,12 +14,12 @@ function checkRootUser
 
 function displayUsageHelp()
 {
-	echo -e "Usage : $0 [folder]. The folder can only be one of these values. [coderepo fedora win10 largeCppTestDataFiles]."
+	echo -e "Usage : $0 [folder]. The folder can only be one of these values. [coderepo fedora win10 largeCppTestDataFiles vmware]."
 }
 
 function validateInputParameter()
 {
-	masterList="coderepo fedora win10 largeCppTestDataFiles"
+	masterList="coderepo fedora win10 largeCppTestDataFiles vmware"
 	returnStatus="false"
 	for masterItem in ${masterList}
 	do
@@ -43,7 +43,7 @@ returnStatus=$(validateInputParameter $1)
 
 if [ "${returnStatus}" != "true" ]; then
 	echo -e "The input folder name is not reconginzed.Quitting the execution with error code 1.."
-	echo -e "The masterList is = [coderepo fedora win10 largeCppTestDataFiles]."
+	echo -e "The masterList is = [coderepo fedora win10 largeCppTestDataFiles vmware]."
 	exit 1
 fi
 

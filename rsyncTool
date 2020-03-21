@@ -89,7 +89,7 @@ else
 	currentTimeStamp=$(date +'%Y-%m-%d')
 	currentTimeStamp=$(echo ${currentTimeStamp}" 00:00:00")
 	echo ${currentTimeStamp}>${timeStampConf}
-	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} --progress --files-from=<(find ${srcFolder} -newermt \"${lastTimeStampSynced}\" -type f | sed \"s/${srcFolder//\//\\/}\///g\" | egrep -v \".git|.gitignore\") ${srcFolder} ${destFolder}"
+	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} --progress --files-from=<(find ${srcFolder} -newermt \"${lastTimeStampSynced}\" -type f | sed \"s/${srcFolder//\//\\/}\///g\" | egrep -v \"/.git\") ${srcFolder} ${destFolder}"
 	
 fi	
 
