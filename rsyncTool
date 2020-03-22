@@ -89,10 +89,20 @@ else
 	currentTimeStamp=$(date +'%Y-%m-%d')
 	currentTimeStamp=$(echo ${currentTimeStamp}" 00:00:00")
 	echo ${currentTimeStamp}>${timeStampConf}
-	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} --progress --files-from=<(find ${srcFolder} -newermt \"${lastTimeStampSynced}\" -type f | sed \"s/${srcFolder//\//\\/}\///g\" | egrep -v \"/.git\") ${srcFolder} ${destFolder}"
-	
+	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} --progress --files-from=<(cd ${srcFolder};find -newermt \"${lastTimeStampSynced}\" -type f | sed \"s/\.\///g\" " 
+	finalExecutionCommand=$(echo ${finalExecutionCommand} "| egrep -v \"/.git\") ${srcFolder} ${destFolder}")
 fi	
 
 echo "Will execute the command :---> ${finalExecutionCommand}"
 eval ${finalExecutionCommand}
+if [ "$?" -eq 0 ]; then
+	echo -e "Successfully finished the synchronization. Updating the last finished timestamp to = ${timeStampConf}"
+	echo ${currentTimeStamp}>${timeStampConf}
+else
+	echo -e "There was an issue in running the rsyncTool which exited with returnstatus of non-zero.Please investigate"
+	echo -e "Wont be updating the last synced timestamp at ${timeStampConf}.Exiting with failure code 1..."
+	exit 1
+fi
+
+# Exit with grace of success.
 exit 0
