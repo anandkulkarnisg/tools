@@ -75,6 +75,7 @@ if [ "${rsyncType}" = "full" ]; then
 	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} ${srcFolder} ${destFolder}"
 else
 	if [ ! -d ${rSyncConfigPath} ]; then
+		echo -e "The timestamp config path : ${rSyncConfigPath} not found. Hence Created it.."
 		mkdir -p ${rSyncConfigPath}
 	fi 
 	export whichSyncId=$(echo $1|awk -F"." '{print $1}'|xargs basename)
@@ -90,10 +91,10 @@ else
 	currentTimeStamp=$(echo ${currentTimeStamp}" 00:00:00")
 	echo ${currentTimeStamp}>${timeStampConf}
 	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} --progress --files-from=<(cd ${srcFolder};find -newermt \"${lastTimeStampSynced}\" -type f | sed \"s/\.\///g\" " 
-	finalExecutionCommand=$(echo ${finalExecutionCommand} "| egrep -v \"/.git\") ${srcFolder} ${destFolder}")
+	finalExecutionCommand=$(echo ${finalExecutionCommand} "| egrep -v \"/.git\/\") ${srcFolder} ${destFolder}")
 fi	
 
-echo "Will execute the command :---> ${finalExecutionCommand}"
+echo -e "Will execute the command :---> ${finalExecutionCommand}"
 eval ${finalExecutionCommand}
 if [ "$?" -eq 0 ]; then
 	echo -e "Successfully finished the synchronization. Updating the last finished timestamp to = ${timeStampConf}"

@@ -2,9 +2,32 @@
 # Author   : Anand Kulkarni
 # Synopsis : Wrapper around the underlying oneDriveSync tool script.Automates the synchronization of the all requisite folders.
 
+function displayUsage()
+{
+	echo -e "Usage : $0. The config file is a pipe seperated list of mandatory key and value pair seperated by comma."
+	echo -e "The config file is expected in the path = $HOME/.config/rsynconf/cloudSync.conf"
+}
+
 if [ "$#" -ne 0 ]; then
-	echo -e "Warning : unwanted argument passed. This script does not need/accept arguments. Hence ignoring it.."
+	echo -e "Warning : The script does not need a paramter passed. Ignoring and continuing..."
 fi
+
+# First TODO
+#inputConfigFile=$HOME/.config/rsynconf/cloudsync.conf
+#if [ ! -f ${inputConfigFile} ]; then
+#	echo -e "The ${inputConfigFile} is not found. Exiting the script with error code 1..."
+#	displayUsage
+#	exit 1 
+#else
+	#echo -e "Found config file ${inputConfigFile}. Exporting the params into shell..."
+	#for configItem in $(cat ${inputConfigFile})
+	#do
+	#	varName=$(echo $configItem|awk -F"," '{print $1}')
+	#  varValue=$(echo $configItem|awk -F"," '{print $2}')
+  #	echo -e "exporting the var = ${varName}"
+	#	eval "export $varName=\"$varValue\""
+	#done
+#fi
 
 export srcFolder="/run/media/anand/Windows/os-common/repo"
 export excludeFolderList="ExpanDrive" # Pipe seperate these items.
@@ -14,7 +37,13 @@ export logFile="cloudsync.$(date +%d%m%Y_%H.%M.%S).log"
 dirList=$(ls -l ${srcFolder}|grep ^d|awk '{print $9}'|egrep -v "${excludeFolderList}"|tr '\n' ' ')
 for dir in ${dirList}
 do
-	oneDriveSync ${dir} 2>&1 | tee -a ${logFileDir}/${logFile}
+	oneDriveSync ${dir} 2>&1|tee -a ${logFileDir}/${logFile}
+	# Second TODO
+	#echo -e "Exit code : ${exitCode}"
+	#if [ "${exitCode}" -ne 0 ]; then
+	#	echo -e "Error exit code ${exitCode} from oneDriveSync script.Exiting with same return code..."
+	#	exit ${exitCode}
+	#fi
 done
 
 # Run the automatic cleanup of logs area [ throw away anything older than 2 weeks ].
