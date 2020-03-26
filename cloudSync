@@ -41,6 +41,17 @@ fi
   #	echo -e "exporting the var = ${varName}"
 	#	eval "export $varName=\"$varValue\""
 	#done
+		#!/bin/bash
+	#inputConfigFile=$PWD/t1.conf
+	#while IFS= read -r line
+	#do
+  	#echo "The line is  = $line"
+  	#varName=$(echo $line|awk -F"," '{print $1}')
+  	#varValue=$(echo $line|awk -F"," '{print $2}')
+  	#echo -e "exporting the var = ${varName} to value ${varValue}"
+  	#eval "export $varName=\"$varValue\""
+	#done < ${inputConfigFile}
+	#echo $srcFolder $excludeFolderList $logFileDir $logFile
 #fi
 
 export srcFolder="/run/media/anand/Windows/os-common/repo"
