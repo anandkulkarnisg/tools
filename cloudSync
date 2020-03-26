@@ -2,6 +2,20 @@
 # Author   : Anand Kulkarni
 # Synopsis : Wrapper around the underlying oneDriveSync tool script.Automates the synchronization of the all requisite folders.
 
+# Try the below to fix the issue.
+#a1384313@uklpaumar06a[PRD][~] $ cat cloudSync
+##!/bin/bash
+## url : https://www.cyberciti.biz/faq/unix-linux-bash-find-out-the-exit-codes-of-all-piped-commands/
+#export dir="/home/anand/test"
+#export logFileDir="/tmp"
+#export logFile="test.log"
+#$PWD/oneDriveSync ${dir} 2>&1|tee -a ${logFileDir}/${logFile}
+#echo "${PIPESTATUS[@]}"
+#a1384313@uklpaumar06a[PRD][~] $ cat oneDriveSync
+#!/bin/bash
+#exit 1
+#a1384313@uklpaumar06a[PRD][~] $
+
 function displayUsage()
 {
 	echo -e "Usage : $0. The config file is a pipe seperated list of mandatory key and value pair seperated by comma."
