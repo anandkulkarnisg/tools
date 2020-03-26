@@ -2,20 +2,6 @@
 # Author   : Anand Kulkarni
 # Synopsis : Wrapper around the underlying oneDriveSync tool script.Automates the synchronization of the all requisite folders.
 
-# Try the below to fix the issue.
-#a1384313@uklpaumar06a[PRD][~] $ cat cloudSync
-##!/bin/bash
-## url : https://www.cyberciti.biz/faq/unix-linux-bash-find-out-the-exit-codes-of-all-piped-commands/
-#export dir="/home/anand/test"
-#export logFileDir="/tmp"
-#export logFile="test.log"
-#$PWD/oneDriveSync ${dir} 2>&1|tee -a ${logFileDir}/${logFile}
-#echo "${PIPESTATUS[@]}"
-#a1384313@uklpaumar06a[PRD][~] $ cat oneDriveSync
-#!/bin/bash
-#exit 1
-#a1384313@uklpaumar06a[PRD][~] $
-
 function displayUsage()
 {
 	echo -e "Usage : $0. The config file is a pipe seperated list of mandatory key and value pair seperated by comma."
@@ -26,49 +12,30 @@ if [ "$#" -ne 0 ]; then
 	echo -e "Warning : The script does not need a paramter passed. Ignoring and continuing..."
 fi
 
-# First TODO
-#inputConfigFile=$HOME/.config/rsynconf/cloudsync.conf
-#if [ ! -f ${inputConfigFile} ]; then
-#	echo -e "The ${inputConfigFile} is not found. Exiting the script with error code 1..."
-#	displayUsage
-#	exit 1 
-#else
-	#echo -e "Found config file ${inputConfigFile}. Exporting the params into shell..."
-	#for configItem in $(cat ${inputConfigFile})
-	#do
-	#	varName=$(echo $configItem|awk -F"," '{print $1}')
-	#  varValue=$(echo $configItem|awk -F"," '{print $2}')
-  #	echo -e "exporting the var = ${varName}"
-	#	eval "export $varName=\"$varValue\""
-	#done
-		#!/bin/bash
-	#inputConfigFile=$PWD/t1.conf
-	#while IFS= read -r line
-	#do
-  	#echo "The line is  = $line"
-  	#varName=$(echo $line|awk -F"," '{print $1}')
-  	#varValue=$(echo $line|awk -F"," '{print $2}')
-  	#echo -e "exporting the var = ${varName} to value ${varValue}"
-  	#eval "export $varName=\"$varValue\""
-	#done < ${inputConfigFile}
-	#echo $srcFolder $excludeFolderList $logFileDir $logFile
-#fi
+export inputConfigFile="$HOME/.config/rsynconf/cloudsync.conf"
+if [ ! -f "${inputConfigFile}" ]; then
+	echo -e "Fatal error : The mandatory config file required ${inputConfigFile} is not found.Exiting with error code 1..."
+	exit 1
+else
+	echo -e "Found the ${inputConfigFile}.Proceeding to load it..."
+fi
 
-export srcFolder="/run/media/anand/Windows/os-common/repo"
-export excludeFolderList="ExpanDrive" # Pipe seperate these items.
-export logFileDir="/var/log/onedrive-sync"
-export logFile="cloudsync.$(date +%d%m%Y_%H.%M.%S).log"
+while IFS= read -r line
+do
+	varName=$(echo $line|awk -F"," '{print $1}')
+	varValue=$(echo $line|awk -F"," '{print $2}')
+	eval "export $varName=\"$varValue\""
+done < ${inputConfigFile}
 
 dirList=$(ls -l ${srcFolder}|grep ^d|awk '{print $9}'|egrep -v "${excludeFolderList}"|tr '\n' ' ')
 for dir in ${dirList}
 do
 	oneDriveSync ${dir} 2>&1|tee -a ${logFileDir}/${logFile}
-	# Second TODO
-	#echo -e "Exit code : ${exitCode}"
-	#if [ "${exitCode}" -ne 0 ]; then
-	#	echo -e "Error exit code ${exitCode} from oneDriveSync script.Exiting with same return code..."
-	#	exit ${exitCode}
-	#fi
+	exitCode="${PIPESTATUS[0]}" # The exit code of the first command i.e oneDriveSync script.
+	if [ ${exitCode} -ne 0 ]; then
+		echo -e "Error! The oneDriveSync script failed with non zero exit code = ${exitCode} during sync of folder ${dir}.Exiting the script with error code 1..."	
+		exit 1
+	fi
 done
 
 # Run the automatic cleanup of logs area [ throw away anything older than 2 weeks ].
