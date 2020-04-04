@@ -33,14 +33,14 @@ do
 	oneDriveSync ${dir} 2>&1|tee -a ${logFileDir}/${logFile}
 	exitCode="${PIPESTATUS[0]}" # The exit code of the first command i.e oneDriveSync script.
 	if [ ${exitCode} -ne 0 ]; then
-		echo -e "Error! The oneDriveSync script failed with non zero exit code = ${exitCode} during sync of folder ${dir}.Exiting the script with error code 1..."	
+		echo -e "Error! The oneDriveSync script failed with non zero exit code = ${exitCode} during sync of folder ${dir}.Exiting the script with error code 1..."
 		exit 1
 	fi
 done
 
 # Run the automatic cleanup of logs area [ throw away anything older than 2 weeks ].
 echo -e "cleaning up any files older than 2 weeks [ 14 days ]...."
-find ${logFileDir} -type f -mtime +14 | xargs rm -f
+find ${logFileDir} -type f -mtime ${cleanUpDays} | xargs rm -f
 
 # Gracefully exit with success.
 exit 0 
