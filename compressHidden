@@ -1,0 +1,11 @@
+#!/bin/bash
+# Source Url : ref : https://superuser.com/questions/325504/howto-pipe-cp-tar-gzip-without-creating-intermediary-files
+# Synopsis : A simple script to compress as .tar.gz all the hidden folders/files in home folder [ largely tools and app config ].
+
+export timeStamp=$(date +"%m%d%Y.%r"|sed "s/ /./g"|sed "s/:/./g")
+export resultingFileName="all.hidden.$timeStamp.tar.gz"
+curDir=$(pwd)
+cd $HOME
+ls -a | egrep "^\."|xargs tar -cvf -|gzip -9>$resultingFileName
+cd $curDir
+exit 0

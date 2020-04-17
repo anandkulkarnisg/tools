@@ -39,7 +39,7 @@ do
 done
 
 # Run the automatic cleanup of logs area [ throw away anything older than 2 weeks ].
-echo -e "cleaning up any files older than 2 weeks [ 14 days ]...."
+echo -e "cleaning up any files older than ${cleanUpDays}...."
 find ${logFileDir} -type f -mtime ${cleanUpDays} | xargs rm -f
 
 # Gracefully exit with success.
