@@ -71,8 +71,12 @@ done
 # We are ready to invoke the final command here.
 echo -e "Running the rsync in ${rsyncType} mode..."
 rSyncConfigPath="$HOME/.config/rsynconf"
+
 if [ "${rsyncType}" = "full" ]; then
-	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} ${srcFolder} ${destFolder}"
+  echo -e "Applying leaf elimination transformation since running in full mode"
+  export leafItem=$(basename $destFolder)
+  destFolder=$(echo $destFolder | sed "s/$leafItem//g")
+	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} --delete ${exclusionSwitches} ${srcFolder} ${destFolder}"  # Additional --delete switch to keep source/destination mirrored.
 else
 	if [ ! -d ${rSyncConfigPath} ]; then
 		echo -e "The timestamp config path : ${rSyncConfigPath} not found. Hence Created it.."

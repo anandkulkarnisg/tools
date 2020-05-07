@@ -9,4 +9,10 @@ function checkRootUser
   fi
 }
 checkRootUser
-vmware-modconfig --console --install-all
+logFileFolder="/var/log/vmware-kernel-compile"
+if [ ! -d ${logFileFolder} ]; then
+  mkdir -p ${logFileFolder}
+fi
+logFileName=$(date +%d%m%Y)
+logFileName="vmware.rebuild.${logFileName}.log"
+vmware-modconfig --console --install-all 2>&1 | tee ${logFileFolder}/${logFileName}
