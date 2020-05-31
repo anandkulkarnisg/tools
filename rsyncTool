@@ -76,7 +76,8 @@ if [ "${rsyncType}" = "full" ]; then
   echo -e "Applying leaf elimination transformation since running in full mode"
   export leafItem=$(basename $destFolder)
   destFolder=$(echo $destFolder | sed "s/$leafItem//g")
-	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} --delete ${exclusionSwitches} ${srcFolder} ${destFolder}"  # Additional --delete switch to keep source/destination mirrored.
+  # --delete switch removed since it can knock out destination cloud folders like Documents/Downloads etc.
+	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} ${srcFolder} ${destFolder}"  # Additional --delete switch to keep source/destination mirrored.
 else
 	if [ ! -d ${rSyncConfigPath} ]; then
 		echo -e "The timestamp config path : ${rSyncConfigPath} not found. Hence Created it.."
