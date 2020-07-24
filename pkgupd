@@ -23,6 +23,11 @@ if [ ! -d "$logFileDir" ]; then
 	echo -e "creating Log dir $logFileDir as it does not exist."
 	mkdir -p $logFileDir
 fi
-export logFileName=$(getLogFileName $1 $2 $logFileDir)
+
+if [ "$3" = "nonKernelBulkUpdate" ]; then
+	export logFileName=$(getLogFileName $1 "nonKernelBulkUpdate" $logFileDir)
+else
+	export logFileName=$(getLogFileName $1 $2 $logFileDir)
+fi
 dnfupd $1 $2 2>&1 | tee -a $logFileName
 exit 0
