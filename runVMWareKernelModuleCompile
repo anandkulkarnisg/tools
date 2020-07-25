@@ -15,4 +15,4 @@ if [ ! -d ${logFileFolder} ]; then
 fi
 logFileName=$(date +%d%m%Y)
 logFileName="vmware.rebuild.${logFileName}.log"
-vmware-modconfig --console --install-all 2>&1 | tee ${logFileFolder}/${logFileName}
+vmware-modconfig --console --install-all 2>&1 | tee -a ${logFileFolder}/${logFileName}
