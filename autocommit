@@ -27,22 +27,26 @@ fi
 repoType=$(echo $1|sed "s/g/git/g"|sed "s/b/bitbucket/g")
 repoName=$2
 
-repoPath=$HOME/$repoType/$repoName
-
-if [ ! -d $repoPath ]; then
-  echo -e "The repository expected is not found at path $repoPath. Please verify..."
-  echo -e "Exiting with error code 1..."
-fi
-
+# Ensure that multiple repository names seperated via pipe are handled.
+repoNameList=$(echo $repoName|tr "|" " ")
 cwd=$PWD
-autocommitmsg="commited via autocommit tool"
-echo "The auto commit message is ---> $autocommitmsg"
 
-# Action the command now.
-cd $repoPath
-git add .
-gcm "$autocommitmsg"
-git push -v
+for repoName in $repoNameList
+do
+  repoPath=$HOME/$repoType/$repoName
+  if [ ! -d $repoPath ]; then
+    echo -e "The repository expected is not found at path $repoPath. Please verify..."
+    echo -e "Exiting with error code 1..."
+  fi
+  autocommitmsg="commited via autocommit tool"
+  echo "The auto commit message is ---> $autocommitmsg"
+  # Action the command now.
+  cd $repoPath
+  git add .
+  gcm "$autocommitmsg"
+  git push -v
+done
+
 cd $cwd 
 
 # Exit with grace of success.
