@@ -2,7 +2,7 @@
 
 # Setup the initial config and profile.
 export kxRoot=/opt/kxdeveloper/
-source ${kxRoot}/config/config.profile 
+source ${kxRoot}/config/config.profile
 
 # Set the required env variables.
 export QHOME=~/coding/q64
@@ -13,14 +13,20 @@ export servicePort="5020"
 export clientUrl="http://${serviceHost}:${servicePort}/ax/index.html#ws=${profileUser}"
 export profileRoot="${kxRoot}/data/workspace"
 export profileFolder="${profileRoot}/__nouser__/${profileUser}"
+export browserClient="/opt/google/chrome/chrome"
+
+if [ "$1" = "firefox" ]; then
+  browserClient="/usr/bin/firefox"
+fi
 
 # Invoke the kxdeveloper server side process.
 cd $profileFolder
-nohup rlwrap $QHOME/l64/q ${kxRoot}/launcher.q_ $@ &
+export logFolder="/var/log/kxdeveloper"
+nohup rlwrap $QHOME/l64/q ${kxRoot}/launcher.q_ $@ 2>&1 >> $logFolder/kxdeveloper.server.log &
 
 # Sleep so that sufficient time is given for service to be ready before client launch.
-echo -e "Sleeping for ${sleepTimeQty} seconds for service to start..."
+echo -e "Sleeping for ${sleepTimeQty} seconds for service to start.Will start a firefox session for the developer session of ${profileUser}.."
 sleep ${sleepTimeQty}
 
 # Spin off the service finally.
-nohup firefox "${clientUrl}" &
+nohup $browserClient "${clientUrl}" &

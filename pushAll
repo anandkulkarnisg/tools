@@ -1,0 +1,25 @@
+#!/usr/bin/bash
+
+repoType="dueCommits bb due"
+pushType="b"
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage : pushAll [g/b]. g->git, b->bitbucket."
+  exit 1
+fi
+
+if [ "$1" != "g" -a "$1" != "b" ]; then
+  echo "Usage : pushAll [g/b]. g->git, b->bitbucket."
+  exit 1
+fi
+
+if [ "$1" = "g" ]; then
+  repoType="dueCommits git due"
+  pushType="g"
+fi
+
+repositories=$(eval $repoType|awk -F":" '{print $2}'|sed "s/ //g"|tr "\n" " ")
+for repository in $repositories
+do
+  autocommit $pushType $repository 
+done
