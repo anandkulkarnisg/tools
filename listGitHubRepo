@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+# Ref : https://www.jeffgeerling.com/blog/2018/get-list-all-users-public-github-repositories-using-github-api-and-jq#comment-11897
+repoList=$(curl "https://api.github.com/users/$1/repos?per_page=5000&page=1" 2>/dev/null| jq -r '.[] | .name' 2>/dev/null|tr "\n" " ")
+if [ "$repoList" = "" ]; then
+  echo -e "There are no repositories found for the user $1.Verify manually."
+  exit 1
+fi
+for repository in $repoList
+do
+  echo -e $repository
+done
