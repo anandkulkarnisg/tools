@@ -25,7 +25,7 @@ export logFolder="/var/log/kxdeveloper"
 nohup rlwrap $QHOME/l64/q ${kxRoot}/launcher.q_ $@ 2>&1 >> $logFolder/kxdeveloper.server.log &
 
 # Sleep so that sufficient time is given for service to be ready before client launch.
-echo -e "Sleeping for ${sleepTimeQty} seconds for service to start.Will start a firefox session for the developer session of ${profileUser}.."
+echo -e "Sleeping for ${sleepTimeQty} seconds for service to start.Will start a ${browserClient} session for the developer session of ${profileUser}.."
 sleep ${sleepTimeQty}
 
 # Spin off the service finally.
