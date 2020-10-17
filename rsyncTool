@@ -96,7 +96,7 @@ else
 	currentTimeStamp=$(echo ${currentTimeStamp}" 00:00:00")
 	echo ${currentTimeStamp}>${timeStampConf}
 	finalExecutionCommand="${rsyncBin} ${rsyncSwitches} ${exclusionSwitches} --progress --files-from=<(cd ${srcFolder};find -newermt \"${lastTimeStampSynced}\" -type f | sed \"s/\.\///g\" " 
-	finalExecutionCommand=$(echo ${finalExecutionCommand} "| egrep -v \"/.git\/|/git\/external\/\" | egrep -v \"CMakeFiles|CMakeCache.txt|cmake_install.cmake\") ${srcFolder} ${destFolder}")
+	finalExecutionCommand=$(echo ${finalExecutionCommand} "| egrep -v \"/.git\/|git\/external\/\" | egrep -v \"CMakeFiles|CMakeCache.txt|cmake_install.cmake\") ${srcFolder} ${destFolder}")
 fi	
 
 echo -e "Will execute the command :---> ${finalExecutionCommand}"
