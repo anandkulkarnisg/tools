@@ -27,7 +27,7 @@ fi
 
 cwd=$PWD
 gitDir=$HOME/$repoDir
-dirList=$(ls -lrt $gitDir/ | grep -i ^d | grep -v "external" | awk '{print $9}')
+dirList=$(ls -lrt $gitDir/ | grep -i ^d | egrep -v "external|archive" | awk '{print $9}')
 countDueItems=0
 for dirItem in $dirList
 do
