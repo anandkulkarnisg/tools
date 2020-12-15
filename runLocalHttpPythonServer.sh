@@ -12,7 +12,8 @@ fi
 
 export cwd=$PWD
 cd $1
-export localIpAddr=$(ifconfig wlp2s0|grep "inet "|awk '{print $2}')
+export networkIdent=$(ifconfig -a|grep wlp|tail -1|awk '{print $1}'|sed "s/://g")
+export localIpAddr=$(ifconfig $networkIdent|grep "inet "|awk '{print $2}')
 export port="8099"
 echo -e "Running the http local server at http://${localIpAddr}:${port} using python http.server module at $port..."
 python -m http.server $port
