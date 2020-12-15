@@ -1,0 +1,10 @@
+#!/bin/bash
+# Restart one drive service, remove the mount and restart after 10 secs.
+systemctl stop rclone.service
+sleep 5
+echo -e "Proceeding to unmount the folder..."
+fusermount -u /run/media/anand/Windows/os-common/repo/ExpanDrive/onedrive
+sleep 5
+echo -e "proceeding to restart the service..."
+systemctl start rclone.service
+exit 0
