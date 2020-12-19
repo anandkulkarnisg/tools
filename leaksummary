@@ -43,5 +43,10 @@ done
 rm -f *.valg.log
 
 # Upload the csv into kdb
-~/runq5000 $(which importcsv.q) -exit $1 -q 
-echo -e "\n"
+if [ -f $HOME/runq5000 ]; then
+  $HOME/runq5000 $(which importcsv.q) -exit $1 -q
+else
+  echo -e "Warning : Failed to Identify runq5000 in $HOME folder.Skipping the leakcheck report loading into kdb/q memory table!!\n"
+fi
+# Exit with success finally.
+exit 0
