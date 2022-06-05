@@ -4,5 +4,11 @@
 export excludeList="kernel|\"Last Metadata expiration check\"|\"Obsoleting Packages\"" 
 #nonKernelPkgList=$(dnf check-update|egrep -v ${excludeList}|grep -v ^$|awk '{print $1}'|awk -F"." '{print $1}'|tr "\n" "|")
 nonKernelPkgList=$(dnf check-update | grep -v kernel | grep -v ^$ | grep -v "Last metadata expiration check" | grep -v "Obsoleting Packages" | awk '{print $1}' | awk -F"." '{print $1}' | tr "\n" "|")
-echo -e "Preparing to Install this package list : $nonKernelPkgList"
-pkgupd nk "${nonKernelPkgList}" "nonKernelBulkUpdate"
+anyPkgExists=$(echo ${nonKernelPkgList}|grep -v ^$|wc -l)
+if [ "$anyPkgExists" -gt 0 ]; then
+  echo -e "Preparing to Install this package list : $nonKernelPkgList"
+  pkgupd nk "${nonKernelPkgList}" "nonKernelBulkUpdate"
+else
+  echo -e "No package exists to upgrade.Exiting with success."
+fi
+exit 0
