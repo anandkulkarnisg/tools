@@ -28,9 +28,22 @@ repoType=$(echo $1|sed "s/g/git/g"|sed "s/b/bitbucket/g")
 repoName=$2
 
 # Ensure that multiple repository names seperated via pipe are handled.
-repoNameList=$(echo $repoName|tr "|" " ")
+if [ "$repoName" = "all" ]; then
+  if [ "$repoType" = "git" ]; then
+    # Derive here the repo names from gdue command.
+      repoName=$(dueCommits git due|awk -F":" '{print $2}'|sed "s/ //g"|tr "\n" "|")
+  fi
+  if [ "$repoType" = "bitbucket" ]; then
+    # Derive the repo names from bdue command.
+      repoName=$(dueCommits bb due|awk -F":" '{print $2}'|sed "s/ //g"|tr "\n" "|")
+  fi
+  repoName=${repoName%?}
+  repoNameList=$(echo $repoName|tr "|" " ")
+  echo -e " The repo name is = $repoName"
+else
+  repoNameList=$(echo $repoName|tr "|" " ")
+fi
 cwd=$PWD
-
 for repoName in $repoNameList
 do
   repoPath=$HOME/$repoType/$repoName
