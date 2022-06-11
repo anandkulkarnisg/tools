@@ -39,11 +39,17 @@ if [ "$repoName" = "all" ]; then
   fi
   repoName=${repoName%?}
   repoNameList=$(echo $repoName|tr "|" " ")
-  echo -e " The repo name is = $repoName"
 else
   repoNameList=$(echo $repoName|tr "|" " ")
 fi
 cwd=$PWD
+
+# Check if the repo name is empty/null.If so warn and quit.
+if [ "$repoNameList" = "" ]; then
+  echo -e "No repo names. Hence quitting gracefully."
+  exit 0
+fi
+
 for repoName in $repoNameList
 do
   repoPath=$HOME/$repoType/$repoName
