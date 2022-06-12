@@ -1,0 +1,41 @@
+#!/bin/bash
+# Author : Anand Kulkarni
+# Date : 12/06/2022
+# Synopsis : This script is a generic wrapper interface which takes a path to source folder which needs to be compressed as a gzip tar package. 
+# suitable for being used as input to rpm build process. The package is later then copied to the build area generally run by the root process.
+
+if [ "$#" -ne 3 ]; then
+  echo -e "Usage : $0 sourceFolderPath packageName packageVersion.\nExample : $0 /home/anand/git/tools tools 1.0"
+  exit 1
+fi
+
+#Back up the current working directory.
+cwd=$PWD
+
+srcPath=$1
+pkgName=$2
+pkgVersion=$3
+
+# We first validate the path if the package location/directory exists or not.
+if [ ! -d "${srcPath}" ]; then
+  echo -e "The source path = $srcPath doesnt exist.Please verify."
+  exit 1
+fi
+
+# We now create a temporary folder in /tmp/rpmBuild.$$
+tmpPath=/tmp/rpmBuild.$$
+rm -rf $tmpPath
+mkdir -p $tmpPath
+cp -R ${srcPath}/ $tmpPath
+cd $tmpPath
+mv $pkgName ${pkgName}-${pkgVersion}
+tar --exclude=".git" -cvf ${pkgName}-${pkgVersion}.tar ${pkgName}-${pkgVersion} 
+gzip ${pkgName}-${pkgVersion}.tar
+
+# Now copy these files to ~/rpmbuild/SOURCES and ~/rpmbuild/BUILD
+cp $tmpPath/${pkgName}-${pkgVersion}.tar.gz $HOME/rpmbuild/SOURCES
+cp $tmpPath/${pkgName}-${pkgVersion}.tar.gz $HOME/rpmbuild/BUILD
+
+# Now simply delete the buffer temp area files.
+rm -rf /tmp/rpmBuild.$$
+cd $cwd
