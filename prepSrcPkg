@@ -29,8 +29,7 @@ mkdir -p $tmpPath
 cp -R ${srcPath}/ $tmpPath
 cd $tmpPath
 mv $pkgName ${pkgName}-${pkgVersion}
-tar --exclude=".git" -cvf ${pkgName}-${pkgVersion}.tar ${pkgName}-${pkgVersion} 
-gzip ${pkgName}-${pkgVersion}.tar
+tar --exclude=".git" -cvzf ${pkgName}-${pkgVersion}.tar.gz ${pkgName}-${pkgVersion} 
 
 # Now copy these files to ~/rpmbuild/SOURCES and ~/rpmbuild/BUILD
 cp $tmpPath/${pkgName}-${pkgVersion}.tar.gz $HOME/rpmbuild/SOURCES
