@@ -1,4 +1,4 @@
 #!/bin/bash
 
-find $HOME -name CLion*.evaluation.key | xargs rm -f
+find $HOME/.CLion2019.3 -name CLion*.evaluation.key | xargs rm -f
 echo -e "successfull"
