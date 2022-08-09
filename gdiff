@@ -2,7 +2,8 @@
 
 if [ $# -ne 1 ]; then
   binName=$(basename $0)
-  echo -e "Usage : $binName repositoryName[could be either in bitbucket/git in $HOME]."
+  echo -e "Usage   : $binName repositoryName (could be either in bitbucket/git in $HOME)."
+  echo -e "Example : $binName fedoracustomsettings ( this folder is in $HOME/bitbucket)."
   exit 1
 fi
 
@@ -16,6 +17,9 @@ repoType="git"
 if [ -d $HOME/bitbucket/$repoFolder ]; then
   repoType="bitbucket"
 fi
+
+echo -e "Repository found in $HOME/$repoType folder."
+
 # derive the type of repo based on below logic.
 cwd=$(pwd)
 cd $HOME/$repoType/$1;git diff;git status
