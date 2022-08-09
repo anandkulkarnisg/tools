@@ -1,0 +1,7 @@
+#!/bin/bash
+
+listDir=$HOME/bitbucket/codemaster/checklistByTopic
+if [ "$2" != "" ]; then
+  listDir=$2
+fi
+ls -lrt $listDir | grep -i "${1}."|awk '{print $9}'|sed "s/cpp.//g"|sed "s/.topics.txt//g"|sort|cat -n

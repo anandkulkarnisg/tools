@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+  binName=$(basename $0)
+  echo -e "Usage : $binName repositoryName[could be either in bitbucket/git in $HOME]."
+  exit 1
+fi
+
+# If no folder argument passed quit.
+repoFolder=$1
+if [ ! -d $HOME/git/$repoFolder -a ! -d $HOME/bitbucket/$repoFolder ]; then
+  echo -e "The repository is not found in either git/bitbucket path.Please verify!!"
+  exit 1
+fi
+repoType="git"
+if [ -d $HOME/bitbucket/$repoFolder ]; then
+  repoType="bitbucket"
+fi
+# derive the type of repo based on below logic.
+cwd=$(pwd)
+cd $HOME/$repoType/$1;git diff;git status
+cd $cwd
+exit 0
