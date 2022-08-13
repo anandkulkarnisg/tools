@@ -22,6 +22,10 @@ echo -e "Repository found in $HOME/$repoType folder."
 
 # derive the type of repo based on below logic.
 cwd=$(pwd)
-cd $HOME/$repoType/$1;git diff;git status
+cd $HOME/$repoType/$1;
+echo -e "XXXXXXXXXXXXXXXXXXXXXXXXXX\nXX   git diff status:	XX\nXXXXXXXXXXXXXXXXXXXXXXXXXX\n"
+git diff
+echo -e "XXXXXXXXXXXXXXXXXXXXXXXXXX\nXX  git status:	XX\nXXXXXXXXXXXXXXXXXXXXXXXXXX\n"
+git status
 cd $cwd
 exit 0
