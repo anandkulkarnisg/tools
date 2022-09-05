@@ -1,0 +1,42 @@
+#!/bin/bash
+# Author : Anand Kulkarni.
+# Date : 05/09/2022.
+# Synopsis : A tool to clone the git repositories of a given user. Specifically a useful migration tool meant for cloning ones repositories on a new machine.
+# usage : $0 [gitusername].
+
+if [ $# -ne 1 ]; then
+  echo -e "Invalid Usage : Verify the correct arguments are passed\nUsage : $0 [gituserid]\nUsage Ex:- $0 anandkulkarnisg"
+  exit 1
+fi
+
+# Verify if the user actually exists.Use the below technique which properly get all the repo names.
+repoList=$(curl "https://api.github.com/users/$1/repos?per_page=5000&page=1" 2>/dev/null| jq -r '.[] | .name' 2>/dev/null|tr "\n" " ")
+
+# Print a warning for the user on how many repositories are there if more than 100.
+warnRepoLimit=100
+repoCount=$(echo $repoList|tr " " "\n"|wc -l)
+if [ $repoCount -gt $warnRepoLimit ]; then
+  echo -e "Warning : There are more than 100 repositories for this user : $1 on github.Are you sure you want to continue.?"
+  read -r -p "Are you sure? [y/N] " response
+  case "$response" in
+    [nN][oO]|[nN]) 
+        echo -e "Recieved a No.Exiting with grce."
+        exit 0
+        ;;
+    *)
+        echo -e "Proceeding with Yes option entered"
+        ;;
+  esac
+fi
+
+# Now loop for each item in the list and clone it as below.
+for repoItem in $repoList
+do
+  echo -e "Cloning the repository : $repoItem"
+  command="git clone https://github.com/$1/$repoItem"
+  echo -e "The clone command is :-> $command"
+  eval $command
+  echo -e "Finished the cloning of the repository : $repoItem"
+done
+# Exit with success code.
+exit 0

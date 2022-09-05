@@ -1,0 +1,15 @@
+#!/bin/bash
+cwd=$(pwd)
+cd $PWD
+if [ "$1" != "" ]; then
+  export CFLAGS=$1
+else
+  CFLAGS="-g -std=c++2a -Wall -O2"
+fi
+for item in $(ls *.cpp)
+do
+  command="g++ ${CFLAGS} ${item} -o ${item%.cpp}.out"  
+  echo -e "command running is :->" $command 
+  eval $command
+done
+cd $cwd

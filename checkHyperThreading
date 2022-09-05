@@ -1,0 +1,21 @@
+#!/bin/bash
+# checks if hyperthreading is enabled or not.
+function checkRootUser
+{
+  runUser=$(id|awk '{print $1}'|awk -F"=" '{print $2}')
+  if [ "$runUser" != "0(root)" ] ; then
+    echo -e "must be run by root."
+    exit 1
+  fi
+}
+checkRootUser
+status=$(dmidecode -t processor|grep Count|sed "s/ *//g"|sed "s/\\t/:/g")
+status=$(echo $status|tr "\n" ":")
+coreCount=$(echo $status|awk -F":" '{print $3}')
+threadCount=$(echo $status|awk -F":" '{print $5}')
+if [ $coreCount -ne $threadCount ]; then
+	echo -e "HyperThreading is enabled!!"
+else
+	echo -e "HyperThreading is disabled!!."
+fi
+echo -e "Trace={$status}"
