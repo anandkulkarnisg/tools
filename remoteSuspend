@@ -9,5 +9,6 @@ fi
 
 # Attempt to suspend immediately. First trigger wifi turn off and then run systemctl suspend -i.
 nmcli radio wifi off
+echo -e "Wifi Status turned off prior to suspend at :-> " $(date) >> /var/log/wifistatus.live.log
 systemctl suspend -i
 exit 0

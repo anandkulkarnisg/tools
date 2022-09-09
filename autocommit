@@ -61,6 +61,9 @@ do
   echo "The auto commit message is ---> $autocommitmsg"
   # Action the command now.
   cd $repoPath
+  if [ "$repoName" = "tiddlywiki" ]; then
+    $HOME/git/tools/purgeTiddly
+  fi
   git add .
   gcm "$autocommitmsg"
   git push -v

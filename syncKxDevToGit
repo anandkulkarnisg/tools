@@ -1,0 +1,30 @@
+#!/bin/bash
+# Author : Anand Kulkarni
+# Date : 07/09/2022.
+# Synopsis : sync a particular users kx developer sessions to the git repository.
+# Usage : syncKxDevToGit [kxdeveloper-base-path] [git-base-path]
+
+if [ $# -ne 2 ]; then
+  echo -e "Usage : $0 [kxdeveloper-base-path] [git-base-path]."
+  echo -e "Ex:- $0 /opt/kxdeveloper $HOME/git/repogit/kdb+."
+  echo -e "This will sync the $USER folders from kxdeveloper session to the $HOME/git/repogit/kdb+/$USER folder."
+  exit 1
+fi
+
+srcPath=$1
+destBasePath=$2
+destFullPath=$destBasePath/kxdeveloper-sessions/$USER
+
+if [ ! -d $srcPath -o ! -d $destBasePath ]; then
+  echo -e "Either source path $srcPath or destination path $destBasePath are not valid.Please verify.."
+  exit 1
+fi
+
+if [ ! -d $destFullPath ]; then
+  echo -e "creating the destination folder $destFullPath since it doesnt exist."
+  mkdir -p $destFullPath
+fi
+
+# copy in timestamp preserve mode, force copy and copy only .q files.
+cp --preserve=timestamps $srcPath/data/workspace/__nouser__/${USER}Linux/kxdev-repo/*.q $destFullPath
+exit 0
