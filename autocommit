@@ -70,8 +70,7 @@ do
       $HOME/git/tools/purgeTiddly
     fi
     git add .
-    gcm "$autocommitmsg"
-    #git push -v
+    gcm "$autocommitmsg"    # this commit with proper message and pushes as well.
   fi
 done
 
