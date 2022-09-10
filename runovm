@@ -1,0 +1,32 @@
+#!/bin/bash
+# Invoke an oracle virtual machine using its machineId. This tools depends on listOvm script.
+# Author : Anand Kulkarni
+# Date : 10/09/2022
+# Synopsis : The script invokes an oracle virtual machine by taking it vm name.
+if [ $# -ne 1 ]; then
+  echo -e "No machine id/name passed. Exiting with error."
+  echo -e "Sample usage : $0 mint21\nThis will look for a oracle virtual machine named mint21.vbox and corrosponding uuid for invocation."
+  exit 1
+fi
+
+machineName=$1
+oracleVmMachineDetails=$($HOME/tools/listOvm|grep -i $machineName)
+doesMachineExist=$(echo $oracleVmMachineDetails|grep -v ^$|wc -l)
+if [ $doesMachineExist -eq 0 ]; then
+  doesMachineExist="n"
+else
+  doesMachineExist="y"
+fi
+
+if [ "$doesMachineExist" = "n" ]; then
+  echo -e "The given machine $machineName.vbox does not exist.Please check the oracle vm settings!!"
+  exit 1
+fi
+
+# Invoke the machine here.
+oracleVmManagerBin="/usr/lib/virtualbox/VirtualBoxVM"
+machineUUID=$(echo $oracleVmMachineDetails|awk -F"|" '{print $2}')
+invokeCommand="nohup $oracleVmManagerBin --comment $machineName --startvm $machineUUID --no-startvm-errormsgbox &"
+echo -e $(date) ":-> $invokeCommand" >> /var/log/oraclevm.machines.startstop.log
+eval $invokeCommand
+exit 0
