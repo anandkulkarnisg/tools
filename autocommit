@@ -71,7 +71,7 @@ do
     fi
     git add .
     gcm "$autocommitmsg"
-    git push -v
+    #git push -v
   fi
 done
 
