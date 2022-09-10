@@ -11,6 +11,18 @@ function showUsage()
   echo -e "Usage : The proper usage is : autocommit [g/b] [repo-name]. g stands for git and b stands for bitbucket"
 }
 
+function handleSpecificRepoActions()
+{
+    repoName=$1
+    if [ "$repoName" = "tiddlywiki" ]; then
+      $HOME/git/tools/purgeTiddly
+    fi
+    if [ "$repoName" = "fedoracustomsettings" ]; then
+      runStatus=$(cd $HOME/bitbucket/fedoracustomsettings/menulibre;./dosync;echo "menulibre sync done!!")
+      echo -e "runStatus :-> $runStatus"
+    fi
+}
+
 if [ $# -ne 2 ]; then
   showUsage
   echo -e "Exiting with error code 1..."
@@ -66,9 +78,7 @@ do
     echo "The auto commit message is ---> $autocommitmsg"
     # Action the command now.
     cd $repoPath
-    if [ "$repoName" = "tiddlywiki" ]; then
-      $HOME/git/tools/purgeTiddly
-    fi
+    handleSpecificRepoActions $repoName
     git add .
     gcm "$autocommitmsg"    # this commit with proper message and pushes as well.
   fi
