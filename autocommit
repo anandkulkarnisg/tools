@@ -15,7 +15,8 @@ function handleSpecificRepoActions()
 {
     repoName=$1
     repoActionCommand=$(cat $HOME/tools/repoActions.conf|grep $repoName|awk -F"|" '{print $2}')
-    if [ "$repoActionCommand" != "" ]; then
+    isActionCommandFound=$(echo $repoActionCommand|wc -l|sed -e 's/1/y/g;s/0/n/g')
+    if [ "$isActionCommandFound" = "y" ]; then
       #echo -e "repo action is : " $repoActionCommand
       eval $repoActionCommand
     else
