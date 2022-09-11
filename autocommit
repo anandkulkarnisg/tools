@@ -14,9 +14,11 @@ function showUsage()
 function handleSpecificRepoActions()
 {
     repoName=$1
-    repoActionCommand=$(cat $HOME/tools/repoActions.conf|grep $repoName|awk -F"|" '{print $2}')
+    repoActionDetails=$(cat $HOME/tools/repoActions.conf|grep $repoName)
+    foundRepoName=$(echo $repoActionDetails|awk -F"|" '{print $1}')
+    repoActionCommand=$(echo $repoActionDetails|awk -F"|" '{print $2}')
     isActionCommandFound=$(echo $repoActionCommand|wc -l|sed -e 's/1/y/g;s/0/n/g')
-    if [ "$isActionCommandFound" = "y" ]; then
+    if [ "$repoName" = "$foundRepoName" -a "$isActionCommandFound" = "y" ]; then
       #echo -e "repo action is : " $repoActionCommand
       eval $repoActionCommand
     else
