@@ -3,6 +3,7 @@
 # Author : Anand Kulkarni
 # Date : 10/09/2022
 # Synopsis : The script invokes an oracle virtual machine by taking it vm name.
+# The machine name matching is via case insensitive grep and pick the first match(via head -1)
 if [ $# -ne 1 ]; then
   echo -e "No machine id/name passed. Exiting with error."
   echo -e "Sample usage : $0 mint21\nThis will look for a oracle virtual machine named mint21.vbox and corrosponding uuid for invocation."
@@ -10,17 +11,14 @@ if [ $# -ne 1 ]; then
 fi
 
 machineName=$1
-oracleVmMachineDetails=$($HOME/tools/listOvm|grep -i $machineName)
-doesMachineExist=$(echo $oracleVmMachineDetails|grep -v ^$|wc -l)
-if [ $doesMachineExist -eq 0 ]; then
-  doesMachineExist="n"
-else
-  doesMachineExist="y"
-fi
+oracleVmMachineDetails=$($HOME/tools/listOvm|grep -i $machineName|head -1)
+doesMachineExist=$(echo $oracleVmMachineDetails|grep -v ^$|wc -l|sed -e "s/1/y/g;s/0/n/g")
 
 if [ "$doesMachineExist" = "n" ]; then
   echo -e "The given machine $machineName.vbox does not exist.Please check the oracle vm settings!!"
   exit 1
+else
+  echo -e "The nearest/first machine matching given param $1 is :->" $(echo $oracleVmMachineDetails|awk -F"|" '{print $1}')
 fi
 
 # Invoke the machine here.

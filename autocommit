@@ -14,12 +14,12 @@ function showUsage()
 function handleSpecificRepoActions()
 {
     repoName=$1
-    if [ "$repoName" = "tiddlywiki" ]; then
-      $HOME/git/tools/purgeTiddly
-    fi
-    if [ "$repoName" = "fedoracustomsettings" ]; then
-      runStatus=$(cd $HOME/bitbucket/fedoracustomsettings/menulibre;./dosync;echo "menulibre sync done!!")
-      echo -e "runStatus :-> $runStatus"
+    repoActionCommand=$(cat $HOME/tools/repoActions.conf|grep $repoName|awk -F"|" '{print $2}')
+    if [ "$repoActionCommand" != "" ]; then
+      #echo -e "repo action is : " $repoActionCommand
+      eval $repoActionCommand
+    else
+      echo -e "No specific action found for this repository"
     fi
 }
 
@@ -80,7 +80,7 @@ do
     cd $repoPath
     handleSpecificRepoActions $repoName
     git add .
-    gcm "$autocommitmsg"    # this commit with proper message and pushes as well.
+    gcm "$autocommitmsg"    # this tools commits with proper message and pushes as well to the git repo.
   fi
 done
 
