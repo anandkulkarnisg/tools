@@ -12,13 +12,8 @@ else
   fi
 fi
 
-whichMachine=$(uname -a | awk '{print $2}')
 repoName=$(git config remote.origin.url | xargs basename | sed "s/.git//g")
 echo -e "Processing the updates for repoName = $repoName"
-if [ "$whichMachine" = "ubuntu" ]; then
-  echo -e "Adding files to the git for commit."
-  git add .
-fi
 
 # Generate git commit command with proper user and date time stamp details.
 currDate=$(date +'%d/%m/%Y %H:%M:%S:%3N')
