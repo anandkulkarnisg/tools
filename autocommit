@@ -83,7 +83,7 @@ do
     cd $repoPath
     handleSpecificRepoActions $repoName
     git add .
-    gcm "$autocommitmsg"    # this tools commits with proper message and pushes as well to the git repo.
+    gcm "$autocommitmsg" y    # this tools commits with proper message and pushes as well to the git repo.
   fi
 done
 
