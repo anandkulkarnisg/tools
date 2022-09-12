@@ -1,10 +1,15 @@
 #!/bin/bash
 
-if [ "$#" -ne 1 ]; then
-  echo -e "Proper usage : gcm [ commit details. ]";
+if [ $# -ne 1 -a $# -ne 2 ]; then
+  echo -e "Proper usage : gcm [ commit details. ] [optional : push to git y/n].";
   exit 1
 else
   userComment=$1
+  pushCommitToRepo=$(echo ${2:0:1}|tr '[:upper:]' '[:lower:]')
+  if [ "$pushCommitToRepo" != "y" -a "$pushCommitToRepo" != "n" ]; then
+    echo -e "The second parameter for pushing to git repo is must be either y/n.Please verify!!"
+    exit 1
+  fi
 fi
 
 whichMachine=$(uname -a | awk '{print $2}')
@@ -29,13 +34,10 @@ echo "Running the command --> $fullCommand"
 eval $fullCommand
 echo "Pushing the changes to git now"
 read -p "Press any key to continue..." -n1 -s
-git push -v
-
-# sync the tiddlywiki updates to the fedora machine.
-# Anand Kulkarni - 16/02/2018 - disabling the below as a sync up is no more needed since VM share same read-write mount as host os [ Fedora ].
-#if [ "$whichMachine" = "ubuntu" ]; then
-#  echo -e "Pushing the updates to the Fedora machine."
-#  ssh -t anand@ldnpsr2937.intranet.barcapint.com  "syncRepo $repoName"
-#fi
+if [ "$pushCommitToRepo" = "y" ]; then
+  git push -v
+else
+  echo -e "Warning : Push to git skipped since not requested."
+fi
 
 exit 0
