@@ -19,8 +19,8 @@ function handleSpecificRepoActions()
     repoActionCommand=$(echo $repoActionDetails|awk -F"|" '{print $2}')
     isActionCommandFound=$(echo $repoActionCommand|wc -l|sed -e 's/1/y/g;s/0/n/g')
     if [ "$repoName" = "$foundRepoName" -a "$isActionCommandFound" = "y" ]; then
-      #echo -e "repo action is : " $repoActionCommand
-      eval $repoActionCommand
+      echo -e "repo action is : " $repoActionCommand
+      result=$(eval $repoActionCommand)
     else
       echo -e "No specific action found for this repository"
     fi
@@ -72,7 +72,8 @@ do
     echo -e "The repository expected is not found at path $repoPath. Please verify..."
     echo -e "Exiting with error code 1..."
   fi
-  # Check if a git is clean i.e nothing modified or new added. If so shout and quit here. 
+  # Check if a git is clean i.e nothing modified or new added. If so shout and quit here.
+  handleSpecificRepoActions $repoName
   isGitStatusClean=$(cd $repoPath;git status|tail -1|grep "nothing to commit, working tree clean"|wc -l|sed -e "s/1/y/g;s/0/n/g")
   if [ $isGitStatusClean = "y" ]; then
    echo -e "The git status is completely clean for $repoName.Nothing to do.Skipping this repository!!"
@@ -81,7 +82,6 @@ do
     echo "The auto commit message is ---> $autocommitmsg"
     # Action the command now.
     cd $repoPath
-    handleSpecificRepoActions $repoName
     git add .
     gcm "$autocommitmsg" y    # this tools commits with proper message and pushes as well to the git repo.
   fi
