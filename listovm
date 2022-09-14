@@ -4,6 +4,6 @@ echo -e "#           MachineName|MachineUUId                         #"
 echo -e "#############################################################"
 virtualBoxPath="$HOME/.config/VirtualBox"
 virtualBoxXml="VirtualBox.xml"
-cat $virtualBoxPath/$virtualBoxXml|grep "MachineEntry"|awk -F"=" '{print $2,$3}'|awk -F"\"" '{print $4"|"$2}'|sed 's/\({\|}\)//g'|awk -F"/" '{print $6}'
+cat $virtualBoxPath/$virtualBoxXml|grep "MachineEntry"|awk -F"=" '{print $2,$3}'|awk -F"\"" '{print $4" | "$2}'|sed 's/\({\|}\)//g'|awk -F"/" '{print $6}'
 echo -e "#############################################################"
 exit 0
