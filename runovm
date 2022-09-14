@@ -1,5 +1,5 @@
 #!/bin/bash
-# Invoke an oracle virtual machine using its machineId. This tools depends on listOvm script.
+# Invoke an oracle virtual machine using its machineId. This tools depends on listovm script.
 # Author : Anand Kulkarni
 # Date : 10/09/2022
 # Synopsis : The script invokes an oracle virtual machine by taking it vm name.
@@ -11,7 +11,7 @@ if [ $# -ne 1 ]; then
 fi
 
 machineName=$1
-oracleVmMachineDetails=$($HOME/tools/listOvm|grep -i $machineName|head -1)
+oracleVmMachineDetails=$($HOME/tools/listovm|grep -i $machineName|head -1)
 doesMachineExist=$(echo $oracleVmMachineDetails|grep -v ^$|wc -l|sed -e "s/1/y/g;s/0/n/g")
 
 if [ "$doesMachineExist" = "n" ]; then
