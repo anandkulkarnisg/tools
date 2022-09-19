@@ -16,6 +16,7 @@ doesMachineExist=$(echo $oracleVmMachineDetails|grep -v ^$|wc -l|sed -e "s/1/y/g
 
 if [ "$doesMachineExist" = "n" ]; then
   echo -e "The given machine $machineName.vbox does not exist.Please check the oracle vm settings!!"
+  echo -e "Warning : The oracle vm machines were searched in the path : $HOME/oracleVirtualBox.Please verify if this path is proper."
   exit 1
 else
   echo -e "The nearest/first machine matching given param $1 is :->" $(echo $oracleVmMachineDetails|awk -F"|" '{print $1}')
