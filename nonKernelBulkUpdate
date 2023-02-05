@@ -1,6 +1,19 @@
 #!/usr//bin/bash
 # Author : Anand Kulkarni
 # Synopsis : Install all non kernel packages at once in update.
+
+function checkRootUser
+{
+  runUser=$(id|awk '{print $1}'|awk -F"=" '{print $2}')
+  if [ "$runUser" != "0(root)" ] ; then
+    echo -e "must be run by root."
+    exit 1
+  fi
+}
+
+# If user is not root exit with error.
+checkRootUser
+
 export excludeList="kernel|\"Last Metadata expiration check\"|\"Obsoleting Packages\"" 
 #nonKernelPkgList=$(dnf check-update|egrep -v ${excludeList}|grep -v ^$|awk '{print $1}'|awk -F"." '{print $1}'|tr "\n" "|")
 nonKernelPkgList=$(dnf check-update | grep -v kernel | grep -v ^$ | grep -v "Last metadata expiration check" | grep -v "Obsoleting Packages" | awk '{print $1}' | awk -F"." '{print $1}' | tr "\n" "|")
